@@ -8,14 +8,17 @@ My app will be tailored to young families like my own who need to save money and
 * Secure login 
 * Persistent transaction data
 * A pie chart of expenditures based on category updated in real time
-* Ability to select either 'income' or 'expense'
-* Ability to input income/expense 'amount' and 'category'
-* Visible transaction history that displays 'name', 'date', 'amount', 'category' 
+* Ability to select either `income` or `expense`
+* Ability to input income/expense `amount` and `category`
+* Visible transaction history that displays `name`, `date`, `amount`, `category` 
 
 _Depending on difficulty, these features could be added:_
-  * A progress bar toward goals e.g., 'Your restaurant date fund is half full. Keep it up!'
-  * Encouraging updates e.g., 'Your spending on car parts is down 20 percent from last month. Way to go!'
+  * A progress bar toward goals e.g., `Your restaurant date fund is half full. Keep it up!`
+  * Encouraging updates e.g., `Your spending on car parts is down 20 percent from last month. Way to go!`
   * Access to bank account for automatic updates
+
+  ![Dashboard](images/dash.png)
+  ![expense entry](images/entry.png)
 
 ## Technologies
 1. **HTML** - Uses correct HTML structure for application. Three HTML pages:
@@ -35,9 +38,9 @@ _Depending on difficulty, these features could be added:_
    * User/family data
    * Categories (custom and stock)
    
-**DB** - Store family member authentication information, family members, transactions, categories, and goals in the database.
+5. **DB** - Store family member authentication information, family members, transactions, categories, and goals in the database.
 
-**WebSocket** - As each family member records a transaction, their transaction appears in the list and pie chart visible to all others _in that family_.
+6.**WebSocket** - As each family member records a transaction, their transaction appears in the list and pie chart visible to all others _in that family_.
 
 
 
