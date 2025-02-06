@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- Tell browsers not to scale the viewport automatically -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Family Budget</title>
+  </head>
+  <body>
+    <!-- Use header, main, and footer elements to give semantic structure -->
+    <header>
+      <h1>Family Budget</h1>
+
+      <!-- Navigation elements -->
+      <nav>
+        <!-- Menu is a semantic alternative to <ul> that represents an interaction -->
+        <menu>
+          <li><a href="index.html">Logout</a></li>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="transactions.html">Transaction History</a></li>
+        </menu>
+      </nav>
+
+      <!-- Since we don't have the ability to style we use old style HTML to give some visual formatting -->
+      <hr />
+    </header>
+
+    <main>
+      <h1>Welcome to the Family Finance Manager</h1>
+      <form method="get" action="dashboard.html">
+        <div>
+          <span>name</span>
+          <input type="text" placeholder="your name" />
+        </div>
+        <div>
+          <span>Family ID</span>
+          <input type="password" placeholder="family ID" />
+        </div>
+        <div>
+          <span>password</span>
+          <input type="password" placeholder="password" />
+        </div>
+        <button type="submit">Login</button>
+        <button type="submit">Create an account</button>
+      </form>
+    </main>
+
+    <footer>
+      <hr />
+      <span class="text-reset">a startup by Joshua Riley</span>
+      <br />
+      <a href="https://github.com/Joshp523/startup.git">GitHub</a>
+    </footer>
+  </body>
+</html>
