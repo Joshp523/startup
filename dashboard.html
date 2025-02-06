@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- Tell browsers not to scale the viewport automatically -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Family Budget</title>
+  </head>
+  <body>
+    <!-- Use header, main, and footer elements to give semantic structure -->
+    <header>
+      <h1>Family Budget</h1>
+
+      <!-- Navigation elements -->
+      <nav>
+        <!-- Menu is a semantic alternative to <ul> that represents an interaction -->
+        <menu>
+          <li><a href="index.html">Logout</a></li>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="transactions.html">Transaction History</a></li>
+        </menu>
+      </nav>
+
+      <!-- Since we don't have the ability to style we use old style HTML to give some visual formatting -->
+      <hr />
+    </header>
+
+
+    <main>
+      <div id="picture" class="picture-box"><img width="400px" src="images/placeholder.jpg" alt="Pie chart" /></div>
+      <h1>Log a New Transaction</h1>
+<form action="form.html" method="post" id="transactionForm">
+    <select name="type">
+        <option>Select an option</option>
+        <option>Expense</option>
+        <option>Income</option>
+    </select>
+    <select name="category">
+        <option>Select an option</option>
+        <option>Piano Lessons</option>
+        <option>Stipend</option>
+        <option>Reimbursement</option>
+        <option>Tithing</option>
+        <option>Car Repair</option>
+        <option>School</option>
+        <option>Groceries</option>
+        <option>Gifts</option>
+        <option>Gas</option>
+        <option>Wholesome Recreational Activities</option>
+        <option>Home</option>
+        <option>clothes</option>
+        <option>Classifieds</option>
+        <option>Rent</option>
+        <option>Utilities</option>
+        <option>savings</option>
+    </select>
+    <input type="text" name="amount" placeholder="$ amount" required>
+    <button type="submit">Submit</button>
+</form>
+    </main>
+ 
+    <footer>
+      <hr />
+      <span class="text-reset">a startup by Joshua Riley</span>
+      <br />
+      <a href="https://github.com/Joshp523/startup.git">GitHub</a>
+    </footer>
+  </body>
+</html>

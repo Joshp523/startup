@@ -40,7 +40,7 @@ _Depending on difficulty, these features could be added:_
    
 5. **DB** - Store family member authentication information, family members, transactions, categories, and goals in the database.
 
-6.**WebSocket** - As each family member records a transaction, their transaction appears in the list and pie chart visible to all others _in that family_.
+6. **WebSocket** - As each family member records a transaction, their transaction appears in the list and pie chart visible to all others _in that family_.
 
 
 
