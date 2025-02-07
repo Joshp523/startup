@@ -42,6 +42,12 @@ _Depending on difficulty, these features could be added:_
 
 6. **WebSocket** - As each family member records a transaction, their transaction appears in the list and pie chart visible to all others _in that family_.
 
-
+## HTML Deliverable
+* **HTML pages** - Three HTML pages that represent the ability to login, the home dashboard, and the transaction history.
+* **Links** - The login page automatically links to the dashboard page. The dashboard page links to the transaction history. The footer on each page links to my github repo. The dashboard links to the placeholder image.
+* **Text** - Textual titles, and text options and prompts for transaction infput.
+* **Images** - The dashboard contains an AI-generated placeholder image. Soon, it will be replaced by a third-party API call for a graphic representation of expenses by category
+* **DB/Login** - Input box and submit button for login. Transaction history pulled from the database.
+* **WebSocket** - The transaction history is updated across devices through websocket after each transaction input.
 
 
