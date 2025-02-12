@@ -50,4 +50,11 @@ _Depending on difficulty, these features could be added:_
 * **DB/Login** - Input box and submit button for login. Transaction history pulled from the database.
 * **WebSocket** - The transaction history is updated across devices through websocket after each transaction input.
 
+## CSS Deliverable
+* **Header, footer, and main content body** added a  consistent background and imported a themed font
+* **Navigation elements** pretty buttons that change color and expand while hovering. they also change the cursor. hyperlinks and navigation links change color on hovering.
+* **Responsive to window resizing** using flexbox, content cards appear in rows or columns based on view window ratio.
+* **Application elements** expandable table features consistent row sise and column alignment regardless of entry size.
+* **Application text content** pleasant, old-fashioned font consistent with theme and target audience.
+* **Application images** placeholder image constrained to appropriate size.
 
