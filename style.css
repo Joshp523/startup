@@ -72,7 +72,10 @@ h2 {
 
 }
 
-.transaction-header, .transaction-row{
+.transaction-header, .transaction-row {
+    width: 50%;
+    padding: 10px;
+    margin: 10px 0;
     border: 1px solid #000;
     border-radius: 4px;
     box-sizing: border-box;
