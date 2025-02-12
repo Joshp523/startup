@@ -11,13 +11,12 @@
     <title>Family Budget</title>
   </head>
   <body>
-    <!-- Use header, main, and footer elements to give semantic structure -->
+    
     <header>
       <h1>Family Budget</h1>
 
       <!-- Navigation elements -->
       
-
       <nav>
         <menu class="nav-menu">
             <li><a href="index.html">Logout</a></li>
@@ -34,17 +33,18 @@
       <h1>Welcome to the Family Finance Manager</h1>
       <form method="get" action="dashboard.html">
         <div>
-          <span>name</span>
-          <input type="text" placeholder="your name" />
+          <span>Name</span>
+          <input type="text"  class="login-input" placeholder="your name" />
+        </div>
+        <div>
+          <span>Password</span>
+          <input type="password"  class="login-input" placeholder="password" />
         </div>
         <div>
           <span>Family ID</span>
-          <input type="password" placeholder="family ID" />
+          <input type="password"  class="login-input" placeholder="family ID" />
         </div>
-        <div>
-          <span>password</span>
-          <input type="password" placeholder="password" />
-        </div>
+        
         <button type="submit">Login</button>
         <button type="submit">Create an account</button>
       </form>
@@ -56,5 +56,6 @@
       <br />
       <a href="https://github.com/Joshp523/startup.git" class="github-link">GitHub</a>
     </footer>
+  
   </body>
 </html>
