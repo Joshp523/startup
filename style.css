@@ -5,24 +5,43 @@ body {
     min-height: 100vh;
 }
 
-h1 {
+@media (orientation: portrait) {
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background-color: #224722;
+    min-height: 100vh;
+    margin: 0;
+}
+}
+
+h1, h2 {
+    width: auto;
+    max-width: 100%;
     font-family: 'Uncial Antiqua', serif;
-    width: 100vw;
+}
+
+h1 {
     color: rgb(255, 255, 255);
 }
 
-
+h2 {
+    color: rgb(0, 0, 0);
+}
 
 main {
     display: flex;
-    flex-direction: row;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
     gap: 20px;
     padding: 20px;
     background-color: #f0f0f0;
     border-radius: 10px;
-    margin: 10px auto; 
+    margin: 10px auto;
     max-width: 80%;
 }
 
@@ -32,15 +51,21 @@ main {
         align-items: center; 
         text-align: center; 
     }
+
+    head {
+        display: none;
+    }
+
+    footer {
+        display: none;
+    }
 }
 
-
-h2 {
-    font-family: 'Uncial Antiqua', serif;
-    width: 100vw;
-    color: rgb(0, 0, 0);
+img {
+    width: 33%;
+    max-width: 300px;
+    border-radius: 10px;
 }
-
 
 .login-input {
     width: 50%;
@@ -52,15 +77,14 @@ h2 {
 }
 
 .item {
-    flex: 1 0 calc(50% - 20px);
-    max-width: 33vw;
-    aspect-ratio: auto;
+    flex: 1 1 300px; 
+    max-width: 300px; 
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 20px;
-
+    text-align: center;
 }
 
 .history {
