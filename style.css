@@ -56,12 +56,11 @@ h2 {
     padding: 10px;
     margin: 10px 0;
     border: 1px solid #ddd;
-    /* Light border */
     border-radius: 4px;
     box-sizing: border-box;
 }
 
-.item {
+.item{
     flex: 1 0 calc(50% - 20px); 
     max-width: 33vw;
     aspect-ratio: auto; 
@@ -71,6 +70,12 @@ h2 {
     align-items: center;
     padding: 20px;
 
+}
+
+.transaction-header, .transaction-row{
+    border: 1px solid #000;
+    border-radius: 4px;
+    box-sizing: border-box;
 }
 
 .button, .button2 {
