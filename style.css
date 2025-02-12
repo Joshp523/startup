@@ -60,63 +60,91 @@ h2 {
     box-sizing: border-box;
 }
 
-.item{
-    flex: 1 0 calc(50% - 20px); 
+.item {
+    flex: 1 0 calc(50% - 20px);
     max-width: 33vw;
-    aspect-ratio: auto; 
-    display: flex; 
+    aspect-ratio: auto;
+    display: flex;
     flex-direction: column;
-    justify-content: center; 
+    justify-content: center;
     align-items: center;
     padding: 20px;
 
 }
+
 .history {
-    width: 100%; 
+    width: 100%;
 }
 
-.transaction-header, .transaction-row{
+.transaction-header,
+.transaction-row {
     width: 100%;
     padding: 10px;
     margin: 10px 0;
     border: 1px solid #000;
     border-radius: 4px;
     box-sizing: border-box;
+    display: flex;
 }
 
-.transaction-header span, .transaction-row span{
-    width: 100%;
+.transaction-header span,
+.transaction-row span {
     padding: 9px;
     margin: 9px 0;
     border: 1px solid #f0f0f0;
     border-radius: 3px;
     box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.button, .button2 {
-    background-color: #4f6450; 
+
+.transaction-header span.amount,
+.transaction-row span.amount {
+    width: 20%;
+    text-align: right;
+}
+
+.transaction-header span.category,
+.transaction-row span.category {
+    width: 60%;
+    text-align: left;
+}
+
+.transaction-header span.member,
+.transaction-row span.member {
+    width: 25%;
+    text-align: right;
+}
+
+
+.button,
+.button2 {
+    background-color: #4f6450;
     color: white;
     border: none;
-    border-radius: 10px; 
-    font-size: 18px; 
-    font-family: 'Libre Baskerville', serif; 
+    border-radius: 10px;
+    font-size: 18px;
+    font-family: 'Libre Baskerville', serif;
     cursor: pointer;
     transition: all 0.3s ease;
-    display: flex; 
+    display: flex;
     justify-content: center;
     align-items: center;
     align-content: center;
 }
 
 .button2 {
-    padding: 20px 40px; 
+    padding: 20px 40px;
     width: 200px;
-    height: 200px; 
+    height: 200px;
 }
 
-.button:hover, .button2:hover {
-    background-color: #2dd635; 
-    transform: scale(1.05); 
+.button:hover,
+.button2:hover {
+    background-color: #2dd635;
+    transform: scale(1.05);
 }
 
 
