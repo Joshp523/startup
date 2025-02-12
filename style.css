@@ -30,6 +30,9 @@ h1 {
 
 h2 {
     color: rgb(0, 0, 0);
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 24px;
 }
 
 main {
@@ -104,14 +107,9 @@ img {
 
 .transaction-header span,
 .transaction-row span {
-    padding: 9px;
-    margin: 9px 0;
-    border: 1px solid #f0f0f0;
-    border-radius: 3px;
-    box-sizing: border-box;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    flex: 1;
+    min-width: 0; /* Prevents overflow */
+    text-align: center;
 }
 
 
