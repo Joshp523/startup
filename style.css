@@ -2,83 +2,120 @@ body {
     font-family: 'Libre Baskerville', 'Uncial Antiqua', serif;
     text-align: center;
     background-color: #224722;
-    position: flex;
     min-height: 100vh;
 }
 
-h1{
+h1 {
     font-family: 'Uncial Antiqua', serif;
     width: 100vw;
     color: rgb(255, 255, 255);
 }
 
+
+
+main {
+    display: flex;
+    /* Correct usage */
+    flex-direction: row;
+    /* Allows items to wrap to the next line on smaller screens */
+    justify-content: center;
+    /* Centers items within the flex container */
+    gap: 20px;
+    /* Space between flex items */
+    padding: 20px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    margin: 20px;
+}
+
+@media (orientation: portrait) {
+    main {
+        flex-direction: column;
+    }
+}
+
+@media (max-height: 700px) {
+    header {
+        display: none;
+    }
+
+    footer {
+        display: none;
+    }
+}
+
 h2 {
     font-family: 'Uncial Antiqua', serif;
     width: 100vw;
-    color: rgb(0,0,0);
+    color: rgb(0, 0, 0);
 }
 
-main{
-    color: rgb(0,0,0);
-    background-color: #f0f0f0;
-    padding: 20px;
-    border-radius: 10px;
-    margin: 20px;
-    align-content: center;
-    position: flex;
-}
-.login-input{
-    width: 100%;
+
+.login-input {
+    width: 50%;
     padding: 10px;
     margin: 10px 0;
-    border: 1px solid #ddd; /* Light border */
+    border: 1px solid #ddd;
+    /* Light border */
     border-radius: 4px;
     box-sizing: border-box;
 }
 
-.button{
+.item {
+    flex: 1 0 calc(50% - 20px); 
+    max-width: 33vw;
+    aspect-ratio: auto; 
+    display: flex; 
+    flex-direction: column;
+    justify-content: center; 
+    align-items: center;
+    padding: 20px;
+
+}
+
+.button, .button2 {
     background-color: #4f6450; 
     color: white;
-    padding: 10px 20px; 
-    margin: 10px 0; 
-    border: none; 
-    cursor: pointer; 
-    width: 50%; 
+    border: none;
+    border-radius: 10px; 
+    font-size: 18px; 
+    font-family: 'Libre Baskerville', serif; 
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex; 
+    justify-content: center;
+    align-items: center;
     align-content: center;
 }
 
-.button:hover{
+.button2 {
+    padding: 20px 40px; 
+    width: 200px;
+    height: 200px; 
+}
+
+.button:hover, .button2:hover {
     background-color: #2dd635; 
+    transform: scale(1.05); 
 }
 
-
-image {
-    align-items: center;
-}
-
-.image-container {
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-    text-align: center;
-}
 
 #transactionForm {
-    background-color: #ffffff; 
-    border-radius: 8px; 
+    background-color: #ffffff;
+    border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 20px; 
-    max-width: 400px; 
-    margin: 20px auto; 
+    padding: 20px;
+    max-width: 400px;
+    margin: 20px auto;
     display: flex;
     flex-direction: column;
-    gap: 15px; 
+    gap: 15px;
 }
 
 #transactionForm button {
     width: 100%;
     padding: 10px;
-    background-color: #4f6450; 
+    background-color: #4f6450;
     color: white;
     border: none;
     border-radius: 4px;
@@ -88,11 +125,11 @@ image {
 }
 
 #transactionForm button:hover {
-    background-color: #2dd635; 
+    background-color: #2dd635;
 }
 
 nav {
-   
+
     width: 100%;
     margin: 0 auto;
 }
@@ -119,15 +156,13 @@ nav {
 }
 
 footer {
-    position: flex;
-    bottom: 2cm; /* Keeps the footer 2cm from the bottom */
     left: 0;
     width: 100%;
     color: rgb(255, 255, 255);
     padding: 10px 10px 10px 10px;
 }
 
-.footer-text{
+.footer-text {
     color: rgb(255, 255, 255);
     text-decoration-thickness: 2px;
     margin-bottom: 10px;
