@@ -35,6 +35,20 @@ main{
     box-sizing: border-box;
 }
 
+.button{
+    background-color: #4f6450; /* Green background */
+    color: white; /* White text */
+    padding: 10px 20px; /* Some padding */
+    margin: 10px 0; /* Top and bottom margin */
+    border: none; /* Remove borders */
+    cursor: pointer; /* Mouse pointer on hover */
+    width: 50%; /* Full width */
+}
+
+.button:hover{
+    background-color: #2dd635; /* Green background */
+}
+
 
 body .container {
     width: 100%;
@@ -87,7 +101,13 @@ footer {
     left: 0;
     width: 100%;
     color: rgb(255, 255, 255);
-    padding: 10px 0;
+    padding: 10px 10px 10px 10px;
+}
+
+.footer-text{
+    color: rgb(255, 255, 255);
+    text-decoration-thickness: 2px;
+    margin-bottom: 10px;
 }
 
 .github-link {
