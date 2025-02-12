@@ -15,13 +15,9 @@ h1 {
 
 main {
     display: flex;
-    /* Correct usage */
     flex-direction: row;
-    /* Allows items to wrap to the next line on smaller screens */
     justify-content: center;
-    /* Centers items within the flex container */
     gap: 20px;
-    /* Space between flex items */
     padding: 20px;
     background-color: #f0f0f0;
     border-radius: 10px;
@@ -30,17 +26,14 @@ main {
 
 @media (orientation: portrait) {
     main {
+        display: flex;
         flex-direction: column;
-    }
-}
-
-@media (max-height: 700px) {
-    header {
-        display: none;
-    }
-
-    footer {
-        display: none;
+        justify-content: center;
+        gap: 20px;
+        padding: 20px;
+        background-color: #f0f0f0;
+        border-radius: 10px;
+        margin: 20px;
     }
 }
 
