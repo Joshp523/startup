@@ -2,7 +2,7 @@ body {
     font-family: 'Libre Baskerville', 'Uncial Antiqua', serif;
     text-align: center;
     background-color: #224722;
-    position: relative;
+    position: flex;
     min-height: 100vh;
 }
 
@@ -25,6 +25,7 @@ main{
     border-radius: 10px;
     margin: 20px;
     align-content: center;
+    position: flex;
 }
 .login-input{
     width: 100%;
@@ -36,24 +37,18 @@ main{
 }
 
 .button{
-    background-color: #4f6450; /* Green background */
-    color: white; /* White text */
-    padding: 10px 20px; /* Some padding */
-    margin: 10px 0; /* Top and bottom margin */
-    border: none; /* Remove borders */
-    cursor: pointer; /* Mouse pointer on hover */
-    width: 50%; /* Full width */
+    background-color: #4f6450; 
+    color: white;
+    padding: 10px 20px; 
+    margin: 10px 0; 
+    border: none; 
+    cursor: pointer; 
+    width: 50%; 
+    align-content: center;
 }
 
 .button:hover{
-    background-color: #2dd635; /* Green background */
-}
-
-
-body .container {
-    width: 100%;
-    margin: 0 auto;
-    padding: 0;
+    background-color: #2dd635; 
 }
 
 
@@ -66,6 +61,34 @@ image {
     max-width: 800px;
     margin: 0 auto;
     text-align: center;
+}
+
+#transactionForm {
+    background-color: #ffffff; 
+    border-radius: 8px; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px; 
+    max-width: 400px; 
+    margin: 20px auto; 
+    display: flex;
+    flex-direction: column;
+    gap: 15px; 
+}
+
+#transactionForm button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4f6450; 
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+#transactionForm button:hover {
+    background-color: #2dd635; 
 }
 
 nav {
@@ -96,7 +119,7 @@ nav {
 }
 
 footer {
-    position: absolute;
+    position: flex;
     bottom: 2cm; /* Keeps the footer 2cm from the bottom */
     left: 0;
     width: 100%;
