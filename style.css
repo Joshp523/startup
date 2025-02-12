@@ -75,12 +75,21 @@ h2 {
     width: 100%; 
 }
 
-.transaction-header span, .transaction-row span{
+.transaction-header, .transaction-row{
     width: 100%;
     padding: 10px;
     margin: 10px 0;
     border: 1px solid #000;
     border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.transaction-header span, .transaction-row span{
+    width: 100%;
+    padding: 9px;
+    margin: 9px 0;
+    border: 1px solid #f0f0f0;
+    border-radius: 3px;
     box-sizing: border-box;
 }
 
