@@ -1,41 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Uncial+Antiqua&display=swap" rel="stylesheet">
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" href="style.css" />
-    <!-- Tell browsers not to scale the viewport automatically -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Family Budget</title>
-  </head>
-  <body>
-    <!-- Use header, main, and footer elements to give semantic structure -->
-    <header>
-      <h1>Family Budget</h1>
 
-      <!-- Navigation elements -->
-      <nav>
-        <menu class="nav-menu">
-            <li><a href="index.html">Logout</a></li>
-            <li><a href="dashboard.html">Dashboard</a></li>
-            <li><a href="transactions.html">Transaction History</a></li>
-        </menu>
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Uncial+Antiqua&display=swap"
+    rel="stylesheet">
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="style.css" />
+  <!-- Tell browsers not to scale the viewport automatically -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Family Budget</title>
+</head>
+
+<body>
+  <!-- Use header, main, and footer elements to give semantic structure -->
+  <header>
+    <h1>Family Budget</h1>
+
+    <!-- Navigation elements -->
+    <nav>
+      <menu class="nav-menu">
+        <li><a href="index.html">Logout</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="transactions.html">Transaction History</a></li>
+      </menu>
     </nav>
 
-      <!-- Since we don't have the ability to style we use old style HTML to give some visual formatting -->
-      <hr />
-    </header>
+    <!-- Since we don't have the ability to style we use old style HTML to give some visual formatting -->
+    <hr />
+  </header>
 
-    <main>
+  <main>
+    <div class="item">
       <h2>Transaction History</h2>
       <section>
-        <p>Section</p>
         <table>
           <tr>
-            <th>Amount       </th>
-            <th>Category     </th>
+            <th>Amount </th>
+            <th>Category </th>
             <th>Family Member</th>
           </tr>
           <tr>
@@ -50,13 +54,15 @@
           </tr>
         </table>
       </section>
-    </main>
+    </div>
+  </main>
 
-    <footer>
-      <hr />
-      <span class="text-reset">a startup by Joshua Riley</span>
-      <br />
-      <a href="https://github.com/Joshp523/startup.git" class="github-link">GitHub</a>
-    </footer>
-  </body>
+  <footer>
+    <hr />
+    <span class="text-reset">a startup by Joshua Riley</span>
+    <br />
+    <a href="https://github.com/Joshp523/startup.git" class="github-link">GitHub</a>
+  </footer>
+</body>
+
 </html>
