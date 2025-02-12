@@ -14,3 +14,6 @@ _My goal: to work every weekday uninterrupted 6am-9am on this startup project._
 * I can use <img> for the pie chart (and I can updat it by accessing
 a foreign API)
 
+## CSS Notes
+* while I thought the table in html would be helpful, I ended up just using `<div>` and the grid template in CSS instead
+* flexbox is incredibly helpful for keeping all content aligned and presentable on different screen sizes
