@@ -1,4 +1,4 @@
-body {
+.body {
     font-family: 'Libre Baskerville', 'Uncial Antiqua', serif;
     text-align: center;
     background-color: #224722;
@@ -6,7 +6,7 @@ body {
 }
 
 @media (orientation: portrait) {
-body {
+.body {
     display: flex;
     flex-direction: column;
     align-items: center;
