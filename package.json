@@ -1,0 +1,23 @@
+{
+  "name": "startup",
+  "version": "1.0.0",
+  "description": "## Elevator Pitch My app will be tailored to young families like my own who need to save money and keep track of expenses. The users will be able to log in as a member of a family and view and edit goals and expenditures. This will allow both spouses to be equal partners in managing money, as well as viewing progress toward joint goals. The main attraction of this app will be the graphical representations of spending habits to incentivize frugality (as James Clear describes in _Atomic Habits_, it's important to make _not_ spending as rewarding as spending.)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Joshp523/startup.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Joshp523/startup/issues"
+  },
+  "homepage": "https://github.com/Joshp523/startup#readme",
+  "devDependencies": {
+    "vite": "^6.2.0"
+  }
+}
