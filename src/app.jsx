@@ -2,24 +2,24 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './app.css';
 
-import { BrowserRouter as NavLink, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, NavLink, Route, Routes } from 'react-router-dom';
 import { Transactions } from './transactions/transactions';
 import { Dashboard } from './dashboard/dashboard';
 import { Login } from './login/login';
-import { BrowserRouter } from 'react-router-dom/dist';
+
 
 export default function App() {
     return (
         <BrowserRouter>
-            <div className='body bg-dark text-light'>
+            <div className='body'>
                 <header>
                     <h1>Family Budget</h1>
 
                     <nav>
-                        <menu class="nav-menu">
-                            <li><NavLink href="index.html">Logout</a></li>
-                            <li><NavLink href="dashboard.html">Dashboard</a></li>
-                            <li><NavLink href="transactions.html">Transaction History</a></li>
+                        <menu className="nav-menu">
+                            <li><NavLink className="nav-link" to="/">Logout</NavLink></li>
+                            <li><NavLink className="nav-link" to="dashboard">Dashboard</NavLink></li>
+                            <li><NavLink className="nav-link" to="transactions">Transaction History</NavLink></li>
                         </menu>
                     </nav>
 
@@ -27,7 +27,7 @@ export default function App() {
                 </header>
 
                 <Routes>
-                    <Route path="/" element={<Login />} exact />
+                    <Route path="/" element={<Login />} />
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/transactions" element={<Transactions />} />
                     <Route path="*" element={<NotFound />} />
@@ -47,7 +47,7 @@ export default function App() {
 
 function NotFound() {
     return (
-        <main className='container-fluid bg-secondary text-center'>
+        <main className='container-fluid '>
             <div> 404: Page not found</div>
         </main>
     );
