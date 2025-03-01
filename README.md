@@ -58,3 +58,9 @@ _Depending on difficulty, these features could be added:_
 * **Application text content** - pleasant, old-fashioned font consistent with theme and target audience.
 * **Application images** - placeholder image constrained to appropriate size.
 
+## React part 1 deliverable
+* **Bundled using vite** pretty slick how that does so much automatically. it actually makes the rest pretty doable.
+* **React components** Login, Dashboard, and Transactions are nested components inside Routes
+* **Hooks** no hooks yet
+* **Routes** I used routing to navigate between my three pages.
+* **Bundled and Transpiled** - done!
