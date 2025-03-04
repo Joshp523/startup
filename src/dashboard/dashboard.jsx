@@ -1,6 +1,18 @@
-import React from 'react';
+import React, { useState} from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export function Dashboard() {
+
+    const [type, setType] = useState('');
+    const [category, setCategory] = useState('');
+    const [amount, setAmount] = useState('');
+    const navigate = useNavigate();
+
+    const handleTransaction = (e) => {
+        e.preventDefault();
+        navigate('/transactions');
+    }
+
     return (
         <main className='container-fluid'>
             <div className="item">
@@ -11,13 +23,17 @@ export function Dashboard() {
             </div>
             <div className="item">
                 <h2>Log a New Transaction</h2>
-                <form action="form.html" method="post" id="transactionForm">
-                    <select name="type">
+                <form onSubmit = {handleTransaction}>
+                    <select name="type" 
+                            value={type} 
+                            onChange={(e) => setType(e.target.value)}>
                         <option>Select an option</option>
                         <option>Expense</option>
                         <option>Income</option>
                     </select>
-                    <select name="category">
+                    <select name="category"
+                            value={category}
+                            onChange={(e) => setCategory(e.target.value)}>
                         <option>Select an option</option>
                         <option>Piano Lessons</option>
                         <option>Stipend</option>
@@ -36,8 +52,17 @@ export function Dashboard() {
                         <option>Utilities</option>
                         <option>savings</option>
                     </select>
-                    <input type="text" name="amount" placeholder="$ amount" required></input>
-                    <button type="submit" className="button">Submit</button>
+                    <input type="text" 
+                           name="amount" 
+                           placeholder="$ amount" 
+                           required
+                           value={amount}
+                           onChange={(e) => setAmount(e.target.value)}>                           
+                    </input>
+                    <button type="submit" 
+                            className="button">
+                                Submit
+                    </button>
                 </form>
             </div>
 

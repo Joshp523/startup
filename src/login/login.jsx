@@ -22,7 +22,7 @@ export function Login() {
         <main className='container-fluid'>
             <div className="item">
                 <h2>Welcome to the Family Finance Manager</h2>
-                <form onSubmit= {handleLogin}>
+                <form onSubmit = {handleLogin}>
                     <div>
                         <span>Name</span>
                         <input type="text" 
