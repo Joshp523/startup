@@ -5,18 +5,24 @@ export function Login() {
         <main className='container-fluid'>
             <div className="item">
                 <h2>Welcome to the Family Finance Manager</h2>
-                <form method="get" action="dashboard.html">
+                <form method="get" action="Dashboard">
                     <div>
                         <span>Name</span>
-                        <input type="text" className="login-input" placeholder="your name" />
+                        <input type="text" 
+                               className="login-input" 
+                               placeholder="your name" />
                     </div>
                     <div>
                         <span>Password</span>
-                        <input type="password" className="login-input" placeholder="password" />
+                        <input type="password" 
+                               className="login-input" 
+                               placeholder="password" />
                     </div>
                     <div>
                         <span>Family ID</span>
-                        <input type="password" className="login-input" placeholder="family ID" />
+                        <input type="password" 
+                               className="login-input" 
+                               placeholder="family ID" />
                     </div>
 
                     <button type="submit" className="button">Login</button>
