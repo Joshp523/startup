@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export function Dashboard() {
@@ -23,18 +23,22 @@ export function Dashboard() {
             </div>
             <div className="item">
                 <h2>Log a New Transaction</h2>
-                <form onSubmit = {handleTransaction}>
-                    <select name="type" 
-                            value={type} 
-                            onChange={(e) => setType(e.target.value)}>
-                        <option>Select an option</option>
+                <form onSubmit={handleTransaction}>
+                    <select name="type"
+                        value={type}
+                        onChange={(e) => setType(e.target.value)}>
+                        <option value="" disabled>
+                            Select an option
+                        </option>
                         <option>Expense</option>
                         <option>Income</option>
                     </select>
                     <select name="category"
-                            value={category}
-                            onChange={(e) => setCategory(e.target.value)}>
-                        <option>Select an option</option>
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}>
+                        <option value="" disabled>
+                            Select an option
+                        </option>
                         <option>Piano Lessons</option>
                         <option>Stipend</option>
                         <option>Reimbursement</option>
@@ -52,22 +56,25 @@ export function Dashboard() {
                         <option>Utilities</option>
                         <option>savings</option>
                     </select>
-                    <input type="text" 
-                           name="amount" 
-                           placeholder="$ amount" 
-                           required
-                           value={amount}
-                           onChange={(e) => setAmount(e.target.value)}>                           
-                    </input>
-                    <button type="submit" 
-                            className="button">
-                                Submit
+                    <input type="text"
+                        name="amount"
+                        placeholder="$ amount"
+                        required
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
+                    />
+                    <button type="submit"
+                        className="button">
+                        Submit
                     </button>
                 </form>
             </div>
 
             <div className="item">
-                <button onclick="location.href='transactions.html';" className="button2">Transaction History</button>
+                <button onClick={handleTransaction}
+                    className="button2">
+                    Transaction History
+                </button>
             </div>
         </main>
     );
