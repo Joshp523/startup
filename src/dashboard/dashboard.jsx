@@ -18,7 +18,7 @@ export function Dashboard() {
             <div className="item">
                 <h2>Your Monthly Spending</h2>
                 <div id="picture">
-                    <img src="images/placeholder.jpg" alt="Pie chart" />
+                    <img src="../../public/placeholder.jpg" alt="Pie chart" />
                 </div>
             </div>
             <div className="item">
