@@ -16,7 +16,7 @@ export function Unauthenticated(props) {
         localStorage.setItem('familyID', familyId);
         props.onLogin(familyID);
         props.onLogin(userName);
-        navigate('/dashboard');
+        navigate('/authenticated');
     };
 
     async function handleCreateAccount() {
@@ -24,7 +24,7 @@ export function Unauthenticated(props) {
         localStorage.setItem('familyID', familyId);
         props.onLogin(familyID)
         props.onLogin(userName);
-        navigate('/dashboard');
+        navigate('/authenticated');
     };
 
     return (
