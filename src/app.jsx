@@ -5,31 +5,40 @@ import './app.css';
 import { BrowserRouter, NavLink, Route, Routes } from 'react-router-dom';
 import { Transactions } from './transactions/transactions';
 import { Dashboard } from './dashboard/dashboard';
-import { Unauthenticated } from './login/unauthenticated';
-import { Authenticated } from './login/authenticated';
 import { AuthState } from './login/authState';
+import { Login } from './login/login';
 
 
 export default function App() {
     const [userName, setUserName] = React.useState(localStorage.getItem("userName") || '');
     const [familyId, setFamilyId] = useState(localStorage.getItem('familyId') || '');
     const [password, setPassword] = React.useState(localStorage.getItem("password") || '');
-    const currentAuthState = userName ? AuthState.Authenticated : AuthState.Unauthenticated;
+    //const currentAuthState = userName ? AuthState.Authenticated : AuthState.Unauthenticated;
     const [authState, setAuthState] = React.useState(localStorage.getItem('userName') ? AuthState.Authenticated : AuthState.Unauthenticated);
 
-    const handleLogin = (loginData) => {
-        setUserName(loginData.userName);
-        setFamilyId(loginData.familyId);
-        setPasssword(loginData.password);
+    const handleLogin = (newUserName) => {
+        console.log('handleLogin called with:', newUserName);
+        setUserName(newUserName);
+        const storedFamilyId = localStorage.getItem('familyId') || '';
+        const storedPassword = localStorage.getItem('password') || '';
+        setFamilyId(storedFamilyId);
+        setPassword(storedPassword);
         setAuthState(AuthState.Authenticated);
+        console.log('handleLogin completed');
     };
 
     const handleLogout = () => {
+        console.log('handleLogout called');
         setUserName('');
         setFamilyId('');
         setPassword('');
         setAuthState(AuthState.Unauthenticated);
-    };
+        localStorage.removeItem('userName');
+        localStorage.removeItem('familyId');
+        localStorage.removeItem('password');
+    }
+
+
 
     return (
         <BrowserRouter>
@@ -75,27 +84,54 @@ export default function App() {
                     <Route
                         path="/"
                         element={
-                            authState === AuthState.Authenticated ? (
-                                <Authenticated
-                                    userName={userName}
-                                    familyId={familyId}
-                                    onLogin={handleLogin}
-                                    onLogout={handleLogout}
-                                />
-                            ) : (
-                                <Unauthenticated
-                                    userName={userName}
-                                    familyId={familyId}
-                                    onLogin={handleLogin}
-                                    onLogout={handleLogout}
-                                />
-                            )
+                            <Login
+                                userName={userName}
+                                authState={authState}
+                                onAuthChange={(newUserName, newAuthState) => {
+                                    if (newAuthState === AuthState.Authenticated) {
+                                        handleLogin(newUserName);
+                                    } else {
+                                        handleLogout();
+                                    }
+                                }}
+                            />
                         }
                         exact
                     />
+                    <Route
+                        path="/authenticated"
+                        element={
+                            <Login
+                                userName={userName}
+                                authState={authState}
+                                onAuthChange={(newUserName, newAuthState) => {
+                                    if (newAuthState === AuthState.Authenticated) {
+                                        handleLogin(newUserName); // Pass newUserName directly
+                                    } else {
+                                        handleLogout();
+                                    }
+                                }}
+                            />
+                        }
+                    />
+                    <Route
+                        path="/unauthenticated"
+                        element={
+                            <Login
+                                userName={userName}
+                                authState={authState}
+                                onAuthChange={(newUserName, newAuthState) => {
+                                    if (newAuthState === AuthState.Authenticated) {
+                                        handleLogin(newUserName);
+                                    } else {
+                                        handleLogout();
+                                    }
+                                }}
+                            />
+                        }
+                    />u
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/transactions" element={<Transactions />} />
-                    <Route path="/authenticated" element={<Authenticated />} />
                     <Route path="*" element={<NotFound />} />
                 </Routes>
 

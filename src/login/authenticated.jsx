@@ -10,10 +10,6 @@ export function Authenticated(props) {
 
   function logout() {
     console.log('Logout clicked');
-    localStorage.removeItem('userName');
-    localStorage.removeItem('userName');
-    localStorage.removeItem('familyId');
-    localStorage.removeItem('password');
     props.onLogout();
     navigate('/unauthenticated');
   }
@@ -24,7 +20,13 @@ export function Authenticated(props) {
       <Button variant='primary' onClick={() => navigate('/dashboard')}>
         Dashboard
       </Button>
-      <Button variant='secondary' onClick={logout}>
+      <Button
+        variant='secondary'
+        onClick={() => {
+          console.log('Logout button clicked manually');
+          logout();
+        }}
+      >
         Logout
       </Button>
     </div>
