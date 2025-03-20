@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 import Button from 'react-bootstrap/Button';
 
@@ -9,8 +9,13 @@ export function Authenticated(props) {
   const navigate = useNavigate();
 
   function logout() {
+    console.log('Logout clicked');
     localStorage.removeItem('userName');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('familyId');
+    localStorage.removeItem('password');
     props.onLogout();
+    navigate('/unauthenticated');
   }
 
   return (
@@ -19,7 +24,7 @@ export function Authenticated(props) {
       <Button variant='primary' onClick={() => navigate('/dashboard')}>
         Dashboard
       </Button>
-      <Button variant='secondary' onClick={() => logout()}>
+      <Button variant='secondary' onClick={logout}>
         Logout
       </Button>
     </div>

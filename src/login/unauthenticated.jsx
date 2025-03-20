@@ -12,9 +12,13 @@ export function Unauthenticated(props) {
 
     function handleLogin() {
         try {
+            console.log('Logging in with:', { name, familyId, password });
             localStorage.setItem('userName', name);
             localStorage.setItem('familyId', familyId);
-            props.onLogin({ familyId, userName: name });
+            localStorage.setItem('password', password);
+            console.log('everything set to local storage');
+            props.onLogin({userName: name});
+            console.log('props.login successfully called');
             navigate('/authenticated');
         } catch (error) {
             setDisplayError('Login failed');
@@ -23,9 +27,11 @@ export function Unauthenticated(props) {
 
     function handleCreateAccount() {
         try {
+            console.log('creating account with:', { name, familyId, password });
             localStorage.setItem('userName', name);
             localStorage.setItem('familyId', familyId);
-            props.onLogin({ familyId, userName: name });
+            localStorage.setItem('password', password);
+            props.onLogin({userName: name});
             navigate('/authenticated');
         } catch (error) {
             setDisplayError('Account creation failed');
@@ -68,8 +74,9 @@ export function Unauthenticated(props) {
                     </div>
 
                     <Button
-                        type="submit"
+                        type="button"
                         className="button"
+                        onClick={handleLogin}
                         disabled={!name || !password}
                     >
                         Login

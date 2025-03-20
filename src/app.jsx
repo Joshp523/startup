@@ -47,12 +47,12 @@ export default function App() {
                                         </NavLink>
                                     </li>
                                     <li>
-                                        <NavLink className="nav-link" to="/dashboard">
+                                        <NavLink className="nav-link" to="./dashboard">
                                             Dashboard
                                         </NavLink>
                                     </li>
                                     <li>
-                                        <NavLink className="nav-link" to="/transactions">
+                                        <NavLink className="nav-link" to="./transactions">
                                             Transaction History
                                         </NavLink>
                                     </li>
@@ -76,12 +76,18 @@ export default function App() {
                         path="/"
                         element={
                             authState === AuthState.Authenticated ? (
-                                <Dashboard />
+                                <Authenticated
+                                    userName={userName}
+                                    familyId={familyId}
+                                    onLogin={handleLogin}
+                                    onLogout={handleLogout}
+                                />
                             ) : (
                                 <Unauthenticated
                                     userName={userName}
                                     familyId={familyId}
                                     onLogin={handleLogin}
+                                    onLogout={handleLogout}
                                 />
                             )
                         }
