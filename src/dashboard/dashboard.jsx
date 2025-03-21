@@ -16,12 +16,12 @@ export function Dashboard() {
             type,
             category,
             notes,
-            member: name,
+            member: localStorage.getItem('userName'),
             date: new Date().toISOString(),
         };
         processTransaction(newTransaction);
         setAmount('');
-        setType('expense');
+        setType('Expense');
         setCategory('');
         setNotes('');
         navigate('/transactions');
@@ -76,7 +76,7 @@ export function Dashboard() {
                         <option>Utilities</option>
                         <option>savings</option>
                     </select>
-                    <input type="text"
+                    <input type="number"
                         name="amount"
                         placeholder="$ amount"
                         required
