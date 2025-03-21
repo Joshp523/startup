@@ -26,6 +26,7 @@ export default function App() {
     setAuthState(AuthState.Authenticated);
     setShouldNavigate('/authenticated'); 
     console.log('handleLogin completed');
+    if (callback) callback();
   };
 
   const handleLogout = () => {
@@ -38,6 +39,7 @@ export default function App() {
     localStorage.removeItem('userName');
     localStorage.removeItem('familyId');
     localStorage.removeItem('password');
+    if (callback) callback();
   };
 
 
