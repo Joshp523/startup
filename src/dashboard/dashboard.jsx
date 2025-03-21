@@ -16,6 +16,7 @@ export function Dashboard() {
             type,
             category,
             notes,
+            member: name,
             date: new Date().toISOString(),
         };
         processTransaction(newTransaction);
