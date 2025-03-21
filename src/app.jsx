@@ -42,6 +42,13 @@ export default function App() {
     if (callback) callback();
   };
 
+  const processTransaction = (transaction) => {
+    console.log('processTransaction called with:', transaction);
+    localStorage.setItem('transaction', JSON.stringify(transaction));
+    if (callback) callback();
+    
+  } 
+
 
   return (
     <BrowserRouter>

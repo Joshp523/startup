@@ -6,12 +6,31 @@ export function Dashboard() {
     const [type, setType] = useState('');
     const [category, setCategory] = useState('');
     const [amount, setAmount] = useState('');
+    const [notes, setNotes] = useState('');
     const navigate = useNavigate();
 
     const handleTransaction = (e) => {
         e.preventDefault();
+        const newTransaction = {
+            amount: Number(amount), // Convert to number
+            type,
+            category,
+            notes,
+            date: new Date().toISOString(),
+        };
+        processTransaction(newTransaction);
+        setAmount('');
+        setType('expense');
+        setCategory('');
+        setNotes('');
         navigate('/transactions');
     }
+
+    const processTransaction = (transaction) => {
+        const existingTransactions = JSON.parse(localStorage.getItem('transactions')) || [];
+        const updatedTransactions = [...existingTransactions, { ...transaction, id: Date.now() }];
+        localStorage.setItem('transactions', JSON.stringify(updatedTransactions));
+    };
 
     return (
         <main className='container-fluid'>
@@ -63,6 +82,12 @@ export function Dashboard() {
                         value={amount}
                         onChange={(e) => setAmount(e.target.value)}
                     />
+                    <input type="text"
+                        name="comments"
+                        placeholder="Comments"
+                        value={notes}
+                        onChange={(e) => setNotes(e.target.value)}
+                    />
                     <button type="submit"
                         className="button">
                         Submit
@@ -71,7 +96,7 @@ export function Dashboard() {
             </div>
 
             <div className="item">
-                <button onClick={handleTransaction}
+                <button  onClick={() => navigate('/transactions')}
                     className="button2">
                     Transaction History
                 </button>
