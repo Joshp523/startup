@@ -18,9 +18,9 @@ export function Unauthenticated(props) {
             localStorage.setItem('familyId', familyId);
             localStorage.setItem('password', password);
             console.log('everything set to local storage');
-            props.onLogin({ userName: name});
+            props.onLogin(name);
             console.log('props.login successfully called');
-            navigate('/authenticated');
+            
         } catch (error) {
             setDisplayError('Login failed');
         }
@@ -33,9 +33,9 @@ export function Unauthenticated(props) {
             localStorage.setItem('userName', name);
             localStorage.setItem('familyId', familyId);
             localStorage.setItem('password', password);
-            props.onLogin({ userName: name });
+            props.onLogin(name);
             console.log('about to navigate to authenticated');
-            navigate('/authenticated');
+            
         } catch (error) {
             setDisplayError('Account creation failed');
         }
