@@ -39,6 +39,18 @@ export function Dashboard() {
         generateAiSummary();
     }, []);
 
+    const handleGoal = (e) => {
+        e.preventDefault();
+        const newGoal = {
+            goal: goal,
+            date: new Date().toISOString(),
+        };
+        const existingGoals = JSON.parse(localStorage.getItem('goals')) || [];
+        const updatedGoals = [...existingGoals, { ...newGoal, id: Date.now() }];
+        localStorage.setItem('goals', JSON.stringify(updatedGoals));
+        setGoal('');
+    }
+
     const handleTransaction = (e) => {
         e.preventDefault();
         const newTransaction = {
@@ -181,8 +193,6 @@ export function Dashboard() {
         let totalIncome = 0;
         let totalExpenses = 0;
         const categoryBreakdown = {};
-        const dateBreakdown = {};
-
         transactions.forEach((transaction) => {
             if (transaction.type === "Income") {
                 totalIncome += transaction.amount;
@@ -195,15 +205,14 @@ export function Dashboard() {
             }
             categoryBreakdown[transaction.category + ': ' + transaction.notes] += transaction.amount;
 
-            if (!dateBreakdown[transaction.date]) {
-                dateBreakdown[transaction.date] = 0;
+                if (!dateBreakdown[transaction.date]) {
+                    dateBreakdown[transaction.date] = 0;
+                }
+                dateBreakdown[transaction.date] += transaction.amount;
             }
-            dateBreakdown[transaction.date] += transaction.amount;
         });
 
         const summary = `
-          Total Income: $${totalIncome.toFixed(2)}
-          Total Expenses: $${totalExpenses.toFixed(2)}
           Net Balance: $${(totalIncome - totalExpenses).toFixed(2)}
           Category Breakdown:
           ${Object.entries(categoryBreakdown)
@@ -214,8 +223,57 @@ export function Dashboard() {
         return summary;
     };
 
+    const prepareDataForCharts = (transactions) => {
+        let totalIncome = 0;
+        let totalExpenses = 0;
+        const categoryBreakdown = {};
+        transactions.forEach((transaction) => {
+            if (transaction.type === "Income") {
+                totalIncome += transaction.amount;
+            } else if (transaction.type === "Expense") {
+                totalExpenses += transaction.amount;
+            }
+
+            if (!categoryBreakdown[transaction.category + ': ' + transaction.notes]) {
+                categoryBreakdown[transaction.category + ': ' + transaction.notes] = 0;
+            }
+            categoryBreakdown[transaction.category + ': ' + transaction.notes] += transaction.amount;
+        }
+        );  
+        return {
+            totalIncome,
+            totalExpenses,
+            netBalance: totalIncome - totalExpenses,
+            categoryBreakdown, // Object with category names as keys and amounts as values
+          };
+    };
+
+    const summarizeGoals = (goals) => {
+        if (goals.length === 0) {
+            return "No goals set yet.";
+        }
+
+        const goalSummary = `
+          Goals:
+          ${goals
+                .map((goal) => `Goal: $${goal.goal} (Set on ${new Date(goal.date).toLocaleDateString()})`)
+                .join("\n")}
+        `;
+
+        return goalSummary;
+    };
+
+    const [spendingData, setSpendingData] = useState(null); 
+
+    async function generateGraphs(){
+        const graphsData = JSON.parse(localStorage.getItem('transactions')) || [];
+        const data = prepareDataForCharts(graphsData);
+        setSpendingData(data);
+    }
+
     async function generateAiSummary() {
         const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+        const goals = JSON.parse(localStorage.getItem('goals')) || [];
 
         if (transactions.length === 0) {
             setAiSummary("No transactions recorded yet. Start logging to get AI insights!");
@@ -223,8 +281,7 @@ export function Dashboard() {
         }
 
         const spendingSummary = summarizeSpending(transactions);
-
-        const goalSummary = summarizeGoals
+        const goalSummary = summarizeGoals(goals);
 
         try {
             const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -236,8 +293,8 @@ export function Dashboard() {
                 },
                 body: JSON.stringify({
                     model: "gpt-3.5-turbo",
-                    messages: [{ role: "system", content: "You are a financial assistant providing budget insights for a young family trying to build their savings and spend responsibly. children are very important to them" },
-                    { role: "user", content: `Analyze my weekly expenses and provide a terse financial summary. comment on how this week or month's spending compares to previous spending patterns. comment on our percent progress toward our goals:\n${spendingSummary}\n${goals}` }]
+                    messages: [{ role: "system", content: "You are a financial assistant providing budget insights for a young family trying to build their savings and spend responsibly. children are very important to them. answer each prompt as simply as you can." },
+                    { role: "user", content: `Comment on how this week or month's spending compares to previous spending patterns. higher or lower? Tell us concisely our percent progress toward each specific goal (i.e. you are 40% of the way to meeting your goal of saving a million dollars! keep it up! or "you have already spent x dollars on fast food. keep it under $x in the next x days to meet your goal!"). :\n${spendingSummary}\n${goalSummary}` }]
                 })
             });
 
