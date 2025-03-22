@@ -30,7 +30,7 @@ export function Transactions() {
 
     return (
         <main className='container-fluid text-center'>
-            <div className="transaction-list">
+            <div className="item">
                 <h2>Transaction History</h2>
                 <section>
                     <div className="history">
