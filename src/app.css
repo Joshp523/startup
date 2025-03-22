@@ -6,19 +6,20 @@
 }
 
 @media (orientation: portrait) {
-.body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    background-color: #224722;
-    min-height: 100vh;
-    margin: 0;
-}
+    .body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        background-color: #224722;
+        min-height: 100vh;
+        margin: 0;
+    }
 }
 
-h1, h2 {
+h1,
+h2 {
     width: auto;
     max-width: 100%;
     font-family: 'Uncial Antiqua', serif;
@@ -39,21 +40,24 @@ main {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    align-items: center;
+    align-items: stretch;
     gap: 20px;
     padding: 20px;
     background-color: #f0f0f0;
     border-radius: 10px;
     margin: 10px auto;
-    max-width: 95%;
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 @media (orientation: portrait) {
     main {
         flex-direction: column;
-        align-items: center; 
-        text-align: center; 
-        width: 95%
+        align-items: stretch;
+        text-align: center;
+        width: 100%;
+        max-width: 100%;
     }
 
     header {
@@ -81,8 +85,8 @@ img {
 }
 
 .item {
-    flex: 1 1 300px; 
-    max-width: 300px; 
+    flex: 1 1 100%;
+    max-width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -93,20 +97,21 @@ img {
 
 .transaction-list {
     flex: 1 1 100%;
-    max-width: 100%; 
+    width: 100%;
+    max-width: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    justify-content: flex-start;
+    align-items: stretch;
     padding: 20px;
-    text-align: center;
-  }
+    text-align: left;
+    box-sizing: border-box;
+}
 
-  .history {
+.history {
     width: 100%;
-    max-width: 1000px;
-  }
-
+    max-width: 100%;
+}
 
 .history {
     width: 100%;
@@ -115,16 +120,12 @@ img {
 .transaction-header,
 .transaction-row {
     display: grid;
-    grid-template-columns: 20% 20% 40% 20%;
+    grid-template-columns: 15% 15% 30% 25% 15%;
     align-items: center;
-    text-align: left;
-    border-bottom: 1px solid black; 
+    width: 100%;
+    border-bottom: 1px solid black;
     padding: 10px 5px;
-}
-
-.transaction-header span.date,
-.transaction-row span.date {
-  text-align: left;
+    box-sizing: border-box;
 }
 
 .transaction-header span,
@@ -132,30 +133,44 @@ img {
     text-align: center;
 }
 
-.transaction-row {
-    margin: 5px 0; 
-  }
-  
+.transaction-header span.date,
+.transaction-row span.date {
 
+    text-align: left;
+}
 
 .transaction-header span.amount,
 .transaction-row span.amount {
-    width: 20%;
+
     text-align: right;
 }
 
 .transaction-header span.category,
 .transaction-row span.category {
-    width: 60%;
-    text-align: left;
+
+    text-align: center;
+}
+
+.transaction-header span.notes,
+.transaction-row span.notes {
+
+    text-align: center;
 }
 
 .transaction-header span.member,
 .transaction-row span.member {
-    width: 25%;
-    text-align: right;
+
+    text-align: center;
 }
 
+.transaction-header {
+    font-weight: bold;
+    background-color: #e0e0e0;
+}
+
+.transaction-row {
+    margin: 5px 0;
+}
 
 .button,
 .button2 {

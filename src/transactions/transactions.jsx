@@ -23,6 +23,7 @@ export function Transactions() {
                     {transaction.amount.toFixed(2)}
                 </span>
                 <span className="category">{transaction.category}</span>
+                <span className="notes">{transaction.notes}</span>
                 <span className="member">{transaction.member}</span>
             </div>
         ));
@@ -38,6 +39,7 @@ export function Transactions() {
                             <span>Date</span>
                             <span>Amount </span>
                             <span>Category of Expense </span>
+                            <span>Notes</span>
                             <span>Family Member</span>
                         </div>
                         {transactions.length === 0 ? (
