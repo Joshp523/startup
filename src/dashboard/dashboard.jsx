@@ -7,6 +7,7 @@ export function Dashboard() {
     const [category, setCategory] = useState('');
     const [amount, setAmount] = useState('');
     const [notes, setNotes] = useState('');
+    const [aiSummary, setAiSummary] = useState("Loading AI insights...");
     const navigate = useNavigate();
 
     const handleTransaction = (e) => {
@@ -36,7 +37,7 @@ export function Dashboard() {
     return (
         <main className='container-fluid'>
             <div className="item">
-                <h2>Your Monthly Spending</h2>
+                <h2>AI insights</h2>
                 <div id="picture">
                     <img src="/placeholder.jpg" alt="Pie chart" />
                 </div>
