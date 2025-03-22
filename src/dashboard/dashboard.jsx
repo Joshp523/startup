@@ -17,7 +17,7 @@ export function Dashboard() {
     const handleTransaction = (e) => {
         e.preventDefault();
         const newTransaction = {
-            amount: Number(amount), 
+            amount: Number(amount),
             type,
             category,
             notes,
@@ -42,32 +42,38 @@ export function Dashboard() {
         let totalIncome = 0;
         let totalExpenses = 0;
         const categoryBreakdown = {};
-      
+        const dateBreakdown = {};
+
         transactions.forEach((transaction) => {
-          if (transaction.type === "Income") {
-            totalIncome += transaction.amount;
-          } else if (transaction.type === "Expense") {
-            totalExpenses += transaction.amount;
-          }
-      
-          if (!categoryBreakdown[transaction.category]) {
-            categoryBreakdown[transaction.category] = 0;
-          }
-          categoryBreakdown[transaction.category] += transaction.amount;
+            if (transaction.type === "Income") {
+                totalIncome += transaction.amount;
+            } else if (transaction.type === "Expense") {
+                totalExpenses += transaction.amount;
+            }
+
+            if (!categoryBreakdown[transaction.category + ': ' + transaction.notes]) {
+                categoryBreakdown[transaction.category + ': ' + transaction.notes] = 0;
+            }
+            categoryBreakdown[transaction.category + ': ' + transaction.notes] += transaction.amount;
+
+            if (!dateBreakdown[transaction.date]) {
+                dateBreakdown[transaction.date] = 0;
+            }
+            dateBreakdown[transaction.date] += transaction.amount;
         });
-      
+
         const summary = `
           Total Income: $${totalIncome.toFixed(2)}
           Total Expenses: $${totalExpenses.toFixed(2)}
           Net Balance: $${(totalIncome - totalExpenses).toFixed(2)}
           Category Breakdown:
           ${Object.entries(categoryBreakdown)
-            .map(([category, amount]) => `${category}: $${amount.toFixed(2)}`)
-            .join("\n")}
+                .map(([category, amount]) => `${category}: $${amount.toFixed(2)}`)
+                .join("\n")}
         `;
-      
+
         return summary;
-      };
+    };
 
     async function generateAiSummary() {
         const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
@@ -78,6 +84,8 @@ export function Dashboard() {
         }
 
         const spendingSummary = summarizeSpending(transactions);
+
+        const goalSummary = summarizeGoals
 
         try {
             const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -90,7 +98,7 @@ export function Dashboard() {
                 body: JSON.stringify({
                     model: "gpt-3.5-turbo",
                     messages: [{ role: "system", content: "You are a financial assistant providing budget insights for a young family trying to build their savings and spend responsibly. children are very important to them" },
-                    { role: "user", content: `Analyze my weekly expenses and provide a terse financial summary. compare spending and income over time, where the money goes, and where we could have saved.:\n${spendingSummary}` }]
+                    { role: "user", content: `Analyze my weekly expenses and provide a terse financial summary. comment on how this week or month's spending compares to previous spending patterns. comment on our percent progress toward our goals:\n${spendingSummary}\n${goals}` }]
                 })
             });
 
