@@ -16,6 +16,29 @@ export function Dashboard() {
     const navigate = useNavigate();
     const [transactionUpdate, setTransactionUpdate] = useState(false);
 
+    const [familyID, setFamilyID] = useState(localStorage.getItem('familyID'));
+
+    useEffect(() => {
+
+        const handleStorageChange = () => {
+            const newFamilyID = localStorage.getItem('familyID');
+            setFamilyID(newFamilyID);
+        };
+
+        window.addEventListener('storage', handleStorageChange);
+
+
+        if (familyID) {
+            generateGraphs();
+            generateAiSummary();
+        } else {
+            setAiSummary("Please log in to view insights.");
+            setSpendingData(null);
+        }
+
+        return () => window.removeEventListener('storage', handleStorageChange);
+    }, [transactionUpdate, familyID]);
+
     useEffect(() => {
         generateAiSummary();
         generateGraphs();
@@ -137,19 +160,19 @@ export function Dashboard() {
     const [spendingData, setSpendingData] = useState(null);
 
     async function generateGraphs() {
-        const familyID = localStorage.getItem('familyID'); 
+        const familyID = localStorage.getItem('familyID');
         const allData = JSON.parse(localStorage.getItem('budgetData')) || {};
-        const graphsData = allData[familyID] || []; 
+        const graphsData = allData[familyID] || [];
         const data = prepareDataForCharts(graphsData);
         setSpendingData(data);
     }
 
     async function generateAiSummary() {
-        const familyID = localStorage.getItem('familyID'); 
+        const familyID = localStorage.getItem('familyID');
         const allData = JSON.parse(localStorage.getItem('budgetData')) || {};
-        const transactions = allData[familyID] || []; 
+        const transactions = allData[familyID] || [];
         const goalData = JSON.parse(localStorage.getItem('goalData')) || {};
-        const goals = goalData[familyID] || []; 
+        const goals = goalData[familyID] || [];
 
         if (transactions.length === 0) {
             setAiSummary("No transactions recorded yet. Start logging to get AI insights!");
