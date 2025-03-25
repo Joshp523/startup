@@ -16,19 +16,19 @@ export function Dashboard() {
     const navigate = useNavigate();
     const [transactionUpdate, setTransactionUpdate] = useState(false);
 
-    const [familyID, setFamilyID] = useState(localStorage.getItem('familyID'));
+    const [familyId, setFamilyId] = useState(localStorage.getItem('familyId'));
 
     useEffect(() => {
 
         const handleStorageChange = () => {
-            const newFamilyID = localStorage.getItem('familyID');
+            const newFamilyID = localStorage.getItem('familyId');
             setFamilyID(newFamilyID);
         };
 
         window.addEventListener('storage', handleStorageChange);
 
 
-        if (familyID) {
+        if (familyId) {
             generateGraphs();
             generateAiSummary();
         } else {
@@ -37,7 +37,7 @@ export function Dashboard() {
         }
 
         return () => window.removeEventListener('storage', handleStorageChange);
-    }, [transactionUpdate, familyID]);
+    }, [transactionUpdate, familyId]);
 
     useEffect(() => {
         generateAiSummary();
@@ -50,10 +50,11 @@ export function Dashboard() {
             goal: goal,
             date: new Date().toISOString(),
         };
-        const familyID = localStorage.getItem('familyID');
+
         const allData = JSON.parse(localStorage.getItem('goalData')) || {};
-        const existingGoals = allData[familyID] || [];
+        const existingGoals = allData[familyId] || [];
         const updatedGoals = [...existingGoals, { ...newGoal, id: Date.now() }];
+        allData[familyId] = updatedGoals;
         localStorage.setItem('goalData', JSON.stringify(updatedGoals));
         setGoal('');
         setTransactionUpdate((prev) => prev + 1);
@@ -79,11 +80,10 @@ export function Dashboard() {
     }
 
     const processTransaction = (transaction) => {
-        const familyID = localStorage.getItem('familyID');
         const allData = JSON.parse(localStorage.getItem('budgetData')) || {};
-        const familyTransactions = allData[familyID] || [];
+        const familyTransactions = allData[familyId] || [];
         const updatedTransactions = [...familyTransactions, { ...transaction, id: Date.now() }];
-        allData[familyID] = updatedTransactions;
+        allData[familyId] = updatedTransactions;
         localStorage.setItem('budgetData', JSON.stringify(allData));
     };
 
@@ -160,19 +160,17 @@ export function Dashboard() {
     const [spendingData, setSpendingData] = useState(null);
 
     async function generateGraphs() {
-        const familyID = localStorage.getItem('familyID');
         const allData = JSON.parse(localStorage.getItem('budgetData')) || {};
-        const graphsData = allData[familyID] || [];
+        const graphsData = allData[familyId] || [];
         const data = prepareDataForCharts(graphsData);
         setSpendingData(data);
     }
 
     async function generateAiSummary() {
-        const familyID = localStorage.getItem('familyID');
         const allData = JSON.parse(localStorage.getItem('budgetData')) || {};
-        const transactions = allData[familyID] || [];
+        const transactions = allData[familyId] || [];
         const goalData = JSON.parse(localStorage.getItem('goalData')) || {};
-        const goals = goalData[familyID] || [];
+        const goals = goalData[familyId] || [];
 
         if (transactions.length === 0) {
             setAiSummary("No transactions recorded yet. Start logging to get AI insights!");

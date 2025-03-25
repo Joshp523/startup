@@ -5,13 +5,26 @@ export function Transactions() {
 
     const navigate = useNavigate();
     const [transactions, setTransactions] = useState([]);
+    const [familyId, setFamilyId] = useState(localStorage.getItem('familyId'));
 
     useEffect(() => {
-        const familyID = localStorage.getItem('familyID');
-        const allData = JSON.parse(localStorage.getItem('budgetData')) || {};
-        const savedTransactions = allData[familyID] || [];
-        setTransactions(savedTransactions);
-      }, []);
+        const handleStorageChange = () => {
+            const newFamilyId = localStorage.getItem('familyId');
+            setFamilyId(newFamilyId);
+        };
+
+        window.addEventListener('storage', handleStorageChange);
+
+        if (familyId) {
+            const allData = JSON.parse(localStorage.getItem('budgetData')) || {};
+            const savedTransactions = allData[familyId] || [];
+            setTransactions(savedTransactions);
+        } else {
+            setTransactions([]);
+        }
+
+        return () => window.removeEventListener('storage', handleStorageChange);
+    }, [familyId]);
 
     const getTransactionRow = () => {
         return transactions.map((transaction) => (
