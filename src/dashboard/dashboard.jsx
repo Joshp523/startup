@@ -50,7 +50,6 @@ export function Dashboard() {
         setCategory('');
         setNotes('');
         setTransactionUpdate((prev) => prev + 1);
-        setTransactionUpdate((prev) => prev + 1);
         navigate('/transactions');
     }
 
@@ -173,96 +172,10 @@ export function Dashboard() {
             setAiSummary("Unable to generate insights at the moment.");
         }
     }
-    const summarizeSpending = (transactions) => {
-        let totalIncome = 0;
-        let totalExpenses = 0;
-        const categoryBreakdown = {};
-        transactions.forEach((transaction) => {
-            if (transaction.type === "Income") {
-                totalIncome += transaction.amount;
-            } else if (transaction.type === "Expense") {
-                totalExpenses += transaction.amount;
-                if (transaction.category !== "savings") {
-                    if (!categoryBreakdown[transaction.category]) {
-                        categoryBreakdown[transaction.category] = 0;
-                    }
-                    categoryBreakdown[transaction.category] += transaction.amount;
-                }
-            }
-        }
-        );
-        return {
-            totalIncome,
-            totalExpenses,
-            netBalance: totalIncome - totalExpenses,
-            categoryBreakdown, // Object with category names as keys and amounts as values
-        };
-    };
-
-    const summarizeGoals = (goals) => {
-        if (goals.length === 0) {
-            return "No goals set yet.";
-        }
-
-        const goalSummary = `
-          Goals:
-          ${goals
-                .map((goal) => `Goal: $${goal.goal} (Set on ${new Date(goal.date).toLocaleDateString()})`)
-                .join("\n")}
-        `;
-
-        return goalSummary;
-    };
-
-    const [spendingData, setSpendingData] = useState(null);
-
-    async function generateGraphs() {
-        const graphsData = JSON.parse(localStorage.getItem('transactions')) || [];
-        const data = prepareDataForCharts(graphsData);
-        setSpendingData(data);
-    }
-
-    async function generateAiSummary() {
-        const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
-        const goals = JSON.parse(localStorage.getItem('goals')) || [];
-
-        if (transactions.length === 0) {
-            setAiSummary("No transactions recorded yet. Start logging to get AI insights!");
-            return;
-        }
-
-        const spendingSummary = summarizeSpending(transactions);
-        const goalSummary = summarizeGoals(goals);
-
-        try {
-            const response = await fetch("https://api.openai.com/v1/chat/completions", {
-                method: "POST",
-                headers: {
-
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`
-                },
-                body: JSON.stringify({
-                    model: "gpt-3.5-turbo",
-                    messages: [{ role: "system", content: "You are a financial assistant providing budget insights for a young family trying to build their savings and spend responsibly. children are very important to them. answer each prompt as simply as you can." },
-                    { role: "user", content: `Comment on how this week or month's spending compares to previous spending patterns. higher or lower? Tell us concisely our percent progress toward each specific goal (i.e. you are 40% of the way to meeting your goal of saving a million dollars! keep it up! or "you have already spent x dollars on fast food. keep it under $x in the next x days to meet your goal!"). :\n${spendingSummary}\n${goalSummary}` }]
-                })
-            });
-
-            const data = await response.json();
-            const aiMessage = data.choices[0].message.content;
-            setAiSummary(aiMessage);
-        } catch (error) {
-            console.error("Error fetching AI insights:", error);
-            setAiSummary("Unable to generate insights at the moment.");
-        }
-    }
     return (
         <main className='container-fluid'>
             <div className="item">
                 <h2>AI insights</h2>
-                <div id="ai-summary">
-                    <p>{aiSummary}</p>
                 <div id="ai-summary">
                     <p>{aiSummary}</p>
                 </div>
@@ -321,112 +234,7 @@ export function Dashboard() {
                                 }}
                             />
                         </div>
-                <h2>Spending Overview</h2>
-                {spendingData ? (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                        {/* Bar Chart: Income, Expenses, Net Balance */}
-                        <div style={{ width: '100%', maxWidth: '600px', margin: '0 auto' }}>
-                            <h3>Income vs Expenses</h3>
-                            <Bar
-                                data={{
-                                    labels: ['Total Income', 'Total Expenses', 'Net Balance'],
-                                    datasets: [
-                                        {
-                                            label: 'Amount ($)',
-                                            data: [
-                                                spendingData.totalIncome,
-                                                spendingData.totalExpenses,
-                                                spendingData.netBalance,
-                                            ],
-                                            backgroundColor: [
-                                                'rgba(75, 192, 192, 0.6)', // Income: Teal
-                                                'rgba(255, 99, 132, 0.6)', // Expenses: Red
-                                                spendingData.netBalance >= 0
-                                                    ? 'rgba(54, 162, 235, 0.6)' // Net Balance (positive): Blue
-                                                    : 'rgba(255, 206, 86, 0.6)', // Net Balance (negative): Yellow
-                                            ],
-                                            borderColor: [
-                                                'rgba(75, 192, 192, 1)',
-                                                'rgba(255, 99, 132, 1)',
-                                                spendingData.netBalance >= 0
-                                                    ? 'rgba(54, 162, 235, 1)'
-                                                    : 'rgba(255, 206, 86, 1)',
-                                            ],
-                                            borderWidth: 1,
-                                        },
-                                    ],
-                                }}
-                                options={{
-                                    scales: {
-                                        y: {
-                                            beginAtZero: true,
-                                            title: {
-                                                display: true,
-                                                text: 'Amount ($)',
-                                            },
-                                        },
-                                    },
-                                    plugins: {
-                                        legend: {
-                                            display: false, // Hide legend since we only have one dataset
-                                        },
-                                    },
-                                }}
-                            />
-                        </div>
 
-                        {/* Pie Chart: Category Breakdown */}
-                        <div style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }}>
-                            <h3>Spending by Category</h3>
-                            <Pie
-                                data={{
-                                    labels: Object.keys(spendingData.categoryBreakdown),
-                                    datasets: [
-                                        {
-                                            label: 'Spending by Category',
-                                            data: Object.values(spendingData.categoryBreakdown),
-                                            backgroundColor: [
-                                                'rgba(255, 99, 132, 0.6)',
-                                                'rgba(54, 162, 235, 0.6)',
-                                                'rgba(255, 206, 86, 0.6)',
-                                                'rgba(75, 192, 192, 0.6)',
-                                                'rgba(153, 102, 255, 0.6)',
-                                                'rgba(255, 159, 64, 0.6)',
-                                                'rgba(199, 199, 199, 0.6)',
-                                                'rgba(83, 102, 255, 0.6)',
-                                                'rgba(255, 99, 255, 0.6)',
-                                                'rgba(99, 255, 132, 0.6)',
-                                            ], // Add more colors if you have more categories
-                                            borderColor: [
-                                                'rgba(255, 99, 132, 1)',
-                                                'rgba(54, 162, 235, 1)',
-                                                'rgba(255, 206, 86, 1)',
-                                                'rgba(75, 192, 192, 1)',
-                                                'rgba(153, 102, 255, 1)',
-                                                'rgba(255, 159, 64, 1)',
-                                                'rgba(199, 199, 199, 1)',
-                                                'rgba(83, 102, 255, 1)',
-                                                'rgba(255, 99, 255, 1)',
-                                                'rgba(99, 255, 132, 1)',
-                                            ],
-                                            borderWidth: 1,
-                                        },
-                                    ],
-                                }}
-                                options={{
-                                    plugins: {
-                                        legend: {
-                                            position: 'right',
-                                        },
-                                    },
-                                }}
-                            />
-                        </div>
-                    </div>
-                ) : (
-                    <p>No spending data to display. Add transactions to see charts.</p>
-                )}
-            </div>
                         {/* Pie Chart: Category Breakdown */}
                         <div style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }}>
                             <h3>Spending by Category</h3>
@@ -554,7 +362,6 @@ export function Dashboard() {
             </div>
 
             <div className="item">
-                
                 <button onClick={() => navigate('/transactions')}
                     className="button2">
                     Transaction History
