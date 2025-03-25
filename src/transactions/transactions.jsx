@@ -7,7 +7,9 @@ export function Transactions() {
     const [transactions, setTransactions] = useState([]);
 
     useEffect(() => {
-        const savedTransactions = JSON.parse(localStorage.getItem('transactions')) || [];
+        const familyID = localStorage.getItem('familyID');
+        const allData = JSON.parse(localStorage.getItem('budgetData')) || {};
+        const savedTransactions = allData[familyID] || [];
         setTransactions(savedTransactions);
       }, []);
 

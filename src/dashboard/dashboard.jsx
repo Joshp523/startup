@@ -27,9 +27,11 @@ export function Dashboard() {
             goal: goal,
             date: new Date().toISOString(),
         };
-        const existingGoals = JSON.parse(localStorage.getItem('goals')) || [];
+        const familyID = localStorage.getItem('familyID');
+        const allData = JSON.parse(localStorage.getItem('goalData')) || {};
+        const existingGoals = allData[familyID] || [];
         const updatedGoals = [...existingGoals, { ...newGoal, id: Date.now() }];
-        localStorage.setItem('goals', JSON.stringify(updatedGoals));
+        localStorage.setItem('goalData', JSON.stringify(updatedGoals));
         setGoal('');
         setTransactionUpdate((prev) => prev + 1);
     }
@@ -54,9 +56,12 @@ export function Dashboard() {
     }
 
     const processTransaction = (transaction) => {
-        const existingTransactions = JSON.parse(localStorage.getItem('transactions')) || [];
-        const updatedTransactions = [...existingTransactions, { ...transaction, id: Date.now() }];
-        localStorage.setItem('transactions', JSON.stringify(updatedTransactions));
+        const familyID = localStorage.getItem('familyID');
+        const allData = JSON.parse(localStorage.getItem('budgetData')) || {};
+        const familyTransactions = allData[familyID] || [];
+        const updatedTransactions = [...familyTransactions, { ...transaction, id: Date.now() }];
+        allData[familyID] = updatedTransactions;
+        localStorage.setItem('budgetData', JSON.stringify(allData));
     };
 
     const summarizeSpending = (transactions) => {
@@ -132,14 +137,19 @@ export function Dashboard() {
     const [spendingData, setSpendingData] = useState(null);
 
     async function generateGraphs() {
-        const graphsData = JSON.parse(localStorage.getItem('transactions')) || [];
+        const familyID = localStorage.getItem('familyID'); 
+        const allData = JSON.parse(localStorage.getItem('budgetData')) || {};
+        const graphsData = allData[familyID] || []; 
         const data = prepareDataForCharts(graphsData);
         setSpendingData(data);
     }
 
     async function generateAiSummary() {
-        const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
-        const goals = JSON.parse(localStorage.getItem('goals')) || [];
+        const familyID = localStorage.getItem('familyID'); 
+        const allData = JSON.parse(localStorage.getItem('budgetData')) || {};
+        const transactions = allData[familyID] || []; 
+        const goalData = JSON.parse(localStorage.getItem('goalData')) || {};
+        const goals = goalData[familyID] || []; 
 
         if (transactions.length === 0) {
             setAiSummary("No transactions recorded yet. Start logging to get AI insights!");
@@ -160,7 +170,7 @@ export function Dashboard() {
                 body: JSON.stringify({
                     model: "gpt-3.5-turbo",
                     messages: [{ role: "system", content: "You are a financial assistant providing budget insights for a young family trying to build their savings and spend responsibly. children are very important to them. answer each prompt as simply as you can." },
-                    { role: "user", content: `Comment on how this week or month's spending compares to previous spending patterns. higher or lower? Tell us concisely our percent progress toward each specific goal (i.e. you are 40% of the way to meeting your goal of saving a million dollars! keep it up! or "you have already spent x dollars on fast food. keep it under $x in the next x days to meet your goal!"). :\n${spendingSummary}\n${goalSummary}` }]
+                    { role: "user", content: `Comment on how this week or month's spending compares to previous spending patterns. higher or lower? Tell us concisely our percent progress toward each specific goal (i.e. you are 40% of the way to meeting your goal of saving a million dollars! keep it up! or "you have already spent x dollars on fast food. keep it under $x more in the next x days to meet your goal!"). :\n${spendingSummary}\n${goalSummary}` }]
                 })
             });
 

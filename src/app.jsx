@@ -14,7 +14,6 @@ export default function App() {
   const [authState, setAuthState] = React.useState(
     localStorage.getItem('userName') ? AuthState.Authenticated : AuthState.Unauthenticated
   );
-  //const [shouldNavigate, setShouldNavigate] = useState(null); // State to trigger navigation
 
   const handleLogin = (newUserName) => {
     console.log('handleLogin called with:', newUserName);
@@ -41,14 +40,6 @@ export default function App() {
     localStorage.removeItem('password');
     if (callback) callback();
   };
-
-  const processTransaction = (transaction) => {
-    console.log('processTransaction called with:', transaction);
-    localStorage.setItem('transaction', JSON.stringify(transaction));
-    if (callback) callback();
-    
-  } 
-
 
   return (
     <BrowserRouter>
