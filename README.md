@@ -64,3 +64,8 @@ _Depending on difficulty, these features could be added:_
 * **Hooks** no hooks yet
 * **Routes** I used routing to navigate between my three pages.
 * **Bundled and Transpiled** - done!
+
+## React Phase 2 Deliverable
+
+* **All functionality implemented** - it makes two different kinds of graphs in real time from the data stored in local storage. Users can input transactions and goals which are stored in local memory.
+* **Hooks** - Used UseEffect to update graphics and transaction list in Transactions and Dashboard and useState to input variable values for storage
