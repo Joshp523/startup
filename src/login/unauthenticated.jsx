@@ -50,6 +50,7 @@ export function Unauthenticated(props) {
             const body = await response.json();
             setDisplayError(`⚠ Error: ${body.msg}`);
         }
+        navigate('/authenticated')
     }
 
     return (
