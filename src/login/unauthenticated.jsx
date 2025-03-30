@@ -13,14 +13,10 @@ export function Unauthenticated(props) {
     function handleLogin() {
         //e.preventDefault();
         try {
-            console.log('Logging in with:', { name, familyId, password });
-            localStorage.setItem('userName', name);
-            localStorage.setItem('familyId', familyId);
-            localStorage.setItem('password', password);
-            console.log('everything set to local storage');
-            props.onLogin(name);
-            console.log('props.login successfully called');
-            
+            loginOrCreate(`/api/auth/login`);
+            // localStorage.setItem('userName', name);
+            // localStorage.setItem('familyId', familyId);
+            // localStorage.setItem('password', password);
         } catch (error) {
             setDisplayError('Login failed');
         }
@@ -29,15 +25,29 @@ export function Unauthenticated(props) {
     function handleCreateAccount() {
         //e.preventDefault();
         try {
-            console.log('creating account with:', { name, familyId, password });
-            localStorage.setItem('userName', name);
-            localStorage.setItem('familyId', familyId);
-            localStorage.setItem('password', password);
-            props.onLogin(name);
-            console.log('about to navigate to authenticated');
-            
+            loginOrCreate(`/api/auth/create`);
+             // localStorage.setItem('userName', name);
+            // localStorage.setItem('familyId', familyId);
+            // localStorage.setItem('password', password);
         } catch (error) {
             setDisplayError('Account creation failed');
+        }
+    }
+
+    async function loginOrCreate(endpoint) {
+        const response = await fetch(endpoint, {
+            method: 'post',
+            body: JSON.stringify({ name: userName, password: password, familyId: familyId }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+            },
+        });
+        if (response?.status === 200) {
+            localStorage.setItem('userName', userName);
+            props.onLogin(userName);
+        } else {
+            const body = await response.json();
+            setDisplayError(`⚠ Error: ${body.msg}`);
         }
     }
 
@@ -77,7 +87,7 @@ export function Unauthenticated(props) {
                     </div>
 
                     <Button
-                        type="submit" 
+                        type="submit"
                         className="button"
                         disabled={!name || !password}
                     >
