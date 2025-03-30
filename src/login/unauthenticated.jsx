@@ -37,13 +37,13 @@ export function Unauthenticated(props) {
     async function loginOrCreate(endpoint) {
         const response = await fetch(endpoint, {
             method: 'post',
-            body: JSON.stringify({ name: userName, password: password, familyId: familyId }),
+            body: JSON.stringify({ name: name, password: password, familyId: familyId }),
             headers: {
                 'Content-type': 'application/json; charset=UTF-8',
             },
         });
         if (response?.status === 200) {
-            localStorage.setItem('userName', userName);
+            localStorage.setItem('name', name);
             localStorage.setItem('familyId', familyId);
             props.onLogin(userName);
         } else {

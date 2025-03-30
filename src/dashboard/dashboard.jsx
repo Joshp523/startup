@@ -98,7 +98,7 @@ export function Dashboard() {
             type,
             category,
             notes,
-            member: localStorage.getItem('userName'),
+            member: localStorage.getItem('name'),
             date: new Date().toISOString(),
         };
         addTransaction(familyId, newTransaction);
