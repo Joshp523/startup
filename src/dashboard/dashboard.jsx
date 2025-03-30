@@ -44,18 +44,49 @@ export function Dashboard() {
         generateGraphs();
     }, [transactionUpdate]);
 
+    const [goals, setGoals] = React.useState([]);
+
+    React.useEffect(() => {
+        fetch('/api/goalData', {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ familyId })
+        })
+            .then((response) => response.json())
+            .then((goals) => {
+                setGoals(goals);
+            })
+            .catch((error) => console.error("Error fetching goals:", error));
+    }, []);
+
+    const [transactions, setTransactions] = React.useState([]);
+
+    React.useEffect(() => {
+        fetch('/api/budgetData', {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ familyId })
+        })
+            .then((response) => response.json())
+            .then((transactions) => {
+                setGoals(transactions);
+            })
+            .catch((error) => console.error("Error fetching transactions:", error));
+    }, []);
+
     const handleGoal = (e) => {
         e.preventDefault();
         const newGoal = {
             goal: goal,
             date: new Date().toISOString(),
         };
-
-        const allData = JSON.parse(localStorage.getItem('goalData')) || {};
-        const existingGoals = allData[familyId] || [];
-        const updatedGoals = [...existingGoals, { ...newGoal, id: Date.now() }];
-        allData[familyId] = updatedGoals;
-        localStorage.setItem('goalData', JSON.stringify(updatedGoals));
+        addGoal(familyId, newGoal);
         setGoal('');
         setTransactionUpdate((prev) => prev + 1);
     }
@@ -70,7 +101,7 @@ export function Dashboard() {
             member: localStorage.getItem('userName'),
             date: new Date().toISOString(),
         };
-        processTransaction(newTransaction);
+        addTransaction(familyId, newTransaction);
         setAmount('');
         setType('Expense');
         setCategory('');
@@ -78,14 +109,6 @@ export function Dashboard() {
         setTransactionUpdate((prev) => prev + 1);
         navigate('/transactions');
     }
-
-    const processTransaction = (transaction) => {
-        const allData = JSON.parse(localStorage.getItem('budgetData')) || {};
-        const familyTransactions = allData[familyId] || [];
-        const updatedTransactions = [...familyTransactions, { ...transaction, id: Date.now() }];
-        allData[familyId] = updatedTransactions;
-        localStorage.setItem('budgetData', JSON.stringify(allData));
-    };
 
     const summarizeSpending = (transactions) => {
 
@@ -145,32 +168,18 @@ export function Dashboard() {
     const summarizeGoals = (goals) => {
         if (goals.length === 0) {
             return "No goals set yet.";
-        }
-
-        const goalSummary = `
-          Goals:
-          ${goals
-                .map((goal) => `Goal: $${goal.goal} (Set on ${new Date(goal.date).toLocaleDateString()})`)
-                .join("\n")}
-        `;
-
-        return goalSummary;
+        } else return goals;
     };
+    const goalSummary = summarizeGoals(goals);
 
     const [spendingData, setSpendingData] = useState(null);
 
     async function generateGraphs() {
-        const allData = JSON.parse(localStorage.getItem('budgetData')) || {};
-        const graphsData = allData[familyId] || [];
-        const data = prepareDataForCharts(graphsData);
+        const data = prepareDataForCharts(transactions);
         setSpendingData(data);
     }
 
     async function generateAiSummary() {
-        const allData = JSON.parse(localStorage.getItem('budgetData')) || {};
-        const transactions = allData[familyId] || [];
-        const goalData = JSON.parse(localStorage.getItem('goalData')) || {};
-        const goals = goalData[familyId] || [];
 
         if (transactions.length === 0) {
             setAiSummary("No transactions recorded yet. Start logging to get AI insights!");
@@ -203,6 +212,24 @@ export function Dashboard() {
             setAiSummary("Unable to generate insights at the moment.");
         }
     }
+    async function addTransaction(familyId, transaction) {
+        await fetch('/api/budgetData', {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ familyId, transaction }),
+        });
+    }
+
+    async function addGoal(familyId, goal) {
+        await fetch('/api/goalData', {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ familyId, goal }),
+        });
+    }
+
     return (
         <main className='container-fluid'>
             <div className="item">
@@ -230,11 +257,11 @@ export function Dashboard() {
                                                 spendingData.netBalance,
                                             ],
                                             backgroundColor: [
-                                                'rgba(75, 192, 192, 0.6)', 
-                                                'rgba(255, 99, 132, 0.6)', 
+                                                'rgba(75, 192, 192, 0.6)',
+                                                'rgba(255, 99, 132, 0.6)',
                                                 spendingData.netBalance >= 0
-                                                    ? 'rgba(54, 162, 235, 0.6)' 
-                                                    : 'rgba(255, 206, 86, 0.6)', 
+                                                    ? 'rgba(54, 162, 235, 0.6)'
+                                                    : 'rgba(255, 206, 86, 0.6)',
                                             ],
                                             borderColor: [
                                                 'rgba(75, 192, 192, 1)',
@@ -287,7 +314,7 @@ export function Dashboard() {
                                                 'rgba(83, 102, 255, 0.6)',
                                                 'rgba(255, 99, 255, 0.6)',
                                                 'rgba(99, 255, 132, 0.6)',
-                                            ], 
+                                            ],
                                             borderColor: [
                                                 'rgba(255, 99, 132, 1)',
                                                 'rgba(54, 162, 235, 1)',
@@ -390,6 +417,20 @@ export function Dashboard() {
                         Submit Goal
                     </button>
                 </form>
+            </div>
+            <div className="item">
+                <h2>Your Goals</h2>
+                {goals.length > 0 ? (
+                    <ul>
+                        {goals.map((g) => (
+                            <li key={g.id}>
+                                Goal: ${Number(g.goal).toFixed(2)} (Set on {new Date(g.date).toLocaleDateString()})
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p>No goals set yet.</p>
+                )}
             </div>
 
             <div className="item">

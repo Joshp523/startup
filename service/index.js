@@ -8,7 +8,8 @@ const authCookieName = 'token';
 
 // The scores and users are saved in memory and disappear whenever the service is restarted.
 let users = [];
-let familyData = [];
+let familyData = {};
+let goalData = {};
 
 // The service port. In production the front-end code is statically hosted by the service on the same port.
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
@@ -28,122 +29,110 @@ app.use(`/api`, apiRouter);
 
 // CreateAuth a new user
 apiRouter.post('/auth/create', async (req, res) => {
-  if (await findUser('name', req.body.name)) {
-    res.status(409).send({ msg: 'Existing user' });
-  } else {
-    const user = await createUser(req.body.name, req.body.password);
+    if (await findUser('name', req.body.name)) {
+        res.status(409).send({ msg: 'Existing user' });
+    } else {
+        const user = await createUser(req.body.name, req.body.password);
 
-    setAuthCookie(res, user.token);
-    res.send({ name: user.name });
-  }
+        setAuthCookie(res, user.token);
+        res.send({ name: user.name });
+    }
 });
 
 // GetAuth login an existing user
 apiRouter.post('/auth/login', async (req, res) => {
-  const user = await findUser('name', req.body.name);
-  if (user) {
-    if (await bcrypt.compare(req.body.password, user.password)) {
-      user.token = uuid.v4();
-      setAuthCookie(res, user.token);
-      res.send({ name: user.name });
-      return;
+    const user = await findUser('name', req.body.name);
+    if (user) {
+        if (await bcrypt.compare(req.body.password, user.password)) {
+            user.token = uuid.v4();
+            setAuthCookie(res, user.token);
+            res.send({ name: user.name });
+            return;
+        }
     }
-  }
-  res.status(401).send({ msg: 'Unauthorized' });
+    res.status(401).send({ msg: 'Unauthorized' });
 });
 
 // DeleteAuth logout a user
 apiRouter.delete('/auth/logout', async (req, res) => {
-  const user = await findUser('token', req.cookies[authCookieName]);
-  if (user) {
-    delete user.token;
-  }
-  res.clearCookie(authCookieName);
-  res.status(204).end();
+    const user = await findUser('token', req.cookies[authCookieName]);
+    if (user) {
+        delete user.token;
+    }
+    res.clearCookie(authCookieName);
+    res.status(204).end();
 });
 
 // Middleware to verify that the user is authorized to call an endpoint
 const verifyAuth = async (req, res, next) => {
-  const user = await findUser('token', req.cookies[authCookieName]);
-  if (user) {
-    next();
-  } else {
-    res.status(401).send({ msg: 'Unauthorized' });
-  }
+    const user = await findUser('token', req.cookies[authCookieName]);
+    if (user) {
+        next();
+    } else {
+        res.status(401).send({ msg: 'Unauthorized' });
+    }
 };
 
 // GetfamilyData returns the family data
-apiRouter.get('/familyData', verifyAuth, (_req, res) => {
-  res.send(familyData);
+apiRouter.get('/budgetData', verifyAuth, (_req, res) => {
+    res.send(budgetData[req.data.familyId]);
+});
+
+apiRouter.get('/goalData', verifyAuth, (_req, res) => {
+    res.send(goalData[req.data.familyId]);
 });
 
 // PostfamilyData updates the family data
-apiRouter.post('/familyData', verifyAuth, (req, res) => {
-  familyData = req.body;
-  res.send(familyData);
+apiRouter.post('/budgetData', verifyAuth, (req, res) => {
+    budgetData[req.body.familyId].push(req.body.transaction);
+    res.send(budgetData);
 });
+
+apiRouter.post('/goalData', verifyAuth, (req, res) => {
+    goalData[req.data.familyId].push(req.body.goal);
+    res.send(goalData);
+});
+
 
 // Default error handler
 app.use(function (err, req, res, next) {
-  res.status(500).send({ type: err.name, message: err.message });
+    res.status(500).send({ type: err.name, message: err.message });
 });
 
 // Return the application's default page if the path is unknown
 app.use((_req, res) => {
-  res.sendFile('index.html', { root: 'public' });
+    res.sendFile('index.html', { root: 'public' });
 });
 
-// updateScores considers a new score for inclusion in the high scores.
-function updateScores(newScore) {
-  let found = false;
-  for (const [i, prevScore] of scores.entries()) {
-    if (newScore.score > prevScore.score) {
-      scores.splice(i, 0, newScore);
-      found = true;
-      break;
-    }
-  }
-
-  if (!found) {
-    scores.push(newScore);
-  }
-
-  if (scores.length > 10) {
-    scores.length = 10;
-  }
-
-  return scores;
-}
-
 async function createUser(name, password, familyId) {
-  const passwordHash = await bcrypt.hash(password, 10);
-  const familyIdHash = await bcrypt.hash(familyId, 10);
+    const passwordHash = await bcrypt.hash(password, 10);
+    const familyIdHash = await bcrypt.hash(familyId, 10);
 
-  const user = {
-    family: familyIdHash,
-    password: passwordHash,
-    token: uuid.v4(),
-  };
-  users.push(user);
+    const user = {
+        family: familyIdHash,
+        password: passwordHash,
+        token: uuid.v4(),
+    };
+    users.push(user);
 
-  return user;
+    return user;
 }
 
 async function findUser(field, value) {
-  if (!value) return null;
+    if (!value) return null;
 
-  return users.find((u) => u[field] === value);
+    return users.find((u) => u[field] === value);
 }
 
 // setAuthCookie in the HTTP response
 function setAuthCookie(res, authToken) {
-  res.cookie(authCookieName, authToken, {
-    secure: true,
-    httpOnly: true,
-    sameSite: 'strict',
-  });
+    res.cookie(authCookieName, authToken, {
+        secure: true,
+        httpOnly: true,
+        sameSite: 'strict',
+    });
 }
 
 app.listen(port, () => {
-  console.log(`Listening on port ${port}`);
+    console.log(`Listening on port ${port}`);
 });
