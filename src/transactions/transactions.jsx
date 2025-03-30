@@ -6,25 +6,41 @@ export function Transactions() {
     const navigate = useNavigate();
     const [transactions, setTransactions] = useState([]);
     const [familyId, setFamilyId] = useState(localStorage.getItem('familyId'));
+    
+        React.useEffect(() => {
+            fetch('/api/budgetData', {
+                method: 'GET',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ familyId })
+            })
+                .then((response) => response.json())
+                .then((transactions) => {
+                    setTransactions(transactions);
+                })
+                .catch((error) => console.error("Error fetching transactions:", error));
+        }, [transactionUpdate, familyId]);
 
-    useEffect(() => {
-        const handleStorageChange = () => {
-            const newFamilyId = localStorage.getItem('familyId');
-            setFamilyId(newFamilyId);
-        };
+    // useEffect(() => {
+    //     const handleStorageChange = () => {
+    //         const newFamilyId = localStorage.getItem('familyId');
+    //         setFamilyId(newFamilyId);
+    //     };
 
-        window.addEventListener('storage', handleStorageChange);
+    //     window.addEventListener('storage', handleStorageChange);
 
-        if (familyId) {
-            const allData = JSON.parse(localStorage.getItem('budgetData')) || {};
-            const savedTransactions = allData[familyId] || [];
-            setTransactions(savedTransactions);
-        } else {
-            setTransactions([]);
-        }
+    //     if (familyId) {
+    //         const allData = JSON.parse(localStorage.getItem('budgetData')) || {};
+    //         const savedTransactions = allData[familyId] || [];
+    //         setTransactions(savedTransactions);
+    //     } else {
+    //         setTransactions([]);
+    //     }
 
-        return () => window.removeEventListener('storage', handleStorageChange);
-    }, [familyId]);
+    //     return () => window.removeEventListener('storage', handleStorageChange);
+    // }, [familyId]);
 
     const getTransactionRow = () => {
         return transactions.map((transaction) => (

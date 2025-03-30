@@ -60,7 +60,7 @@ export function Dashboard() {
                 setGoals(goals);
             })
             .catch((error) => console.error("Error fetching goals:", error));
-    }, []);
+    }, [goal, familyId]);
 
     const [transactions, setTransactions] = React.useState([]);
 
@@ -75,10 +75,10 @@ export function Dashboard() {
         })
             .then((response) => response.json())
             .then((transactions) => {
-                setGoals(transactions);
+                setTransactions(transactions);
             })
             .catch((error) => console.error("Error fetching transactions:", error));
-    }, []);
+    }, [transactionUpdate, familyId]);
 
     const handleGoal = (e) => {
         e.preventDefault();
@@ -107,7 +107,7 @@ export function Dashboard() {
         setCategory('');
         setNotes('');
         setTransactionUpdate((prev) => prev + 1);
-        navigate('/transactions');
+        //navigate('/transactions');
     }
 
     const summarizeSpending = (transactions) => {
