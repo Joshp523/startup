@@ -29,8 +29,11 @@ app.use(`/api`, apiRouter);
 
 // CreateAuth a new user
 apiRouter.post('/auth/create', async (req, res) => {
-    if (await findUser('name', req.body.name)) {
-        res.status(409).send({ msg: 'Existing user' });
+    if (user = await findUser('name', req.body.name)) {
+        const familyMatch = await bcrypt.compare(req.body.familyId, user.family);
+        if (familyMatch) {
+            res.status(409).send({ msg: 'Existing user' });
+        }
     } else {
         const user = await createUser(req.body.name, req.body.password);
 
@@ -39,15 +42,17 @@ apiRouter.post('/auth/create', async (req, res) => {
     }
 });
 
-// GetAuth login an existing user
 apiRouter.post('/auth/login', async (req, res) => {
     const user = await findUser('name', req.body.name);
     if (user) {
-        if (await bcrypt.compare(req.body.password, user.password)) {
-            user.token = uuid.v4();
-            setAuthCookie(res, user.token);
-            res.send({ name: user.name });
-            return;
+        const familyMatch = await bcrypt.compare(req.body.familyId, user.family);
+        if (familyMatch) {
+            if (await bcrypt.compare(req.body.password, user.password)) {
+                user.token = uuid.v4();
+                setAuthCookie(res, user.token);
+                res.send({ name: user.name });
+                return;
+            }
         }
     }
     res.status(401).send({ msg: 'Unauthorized' });
@@ -109,6 +114,7 @@ async function createUser(name, password, familyId) {
     const familyIdHash = await bcrypt.hash(familyId, 10);
 
     const user = {
+        name: name,
         family: familyIdHash,
         password: passwordHash,
         token: uuid.v4(),

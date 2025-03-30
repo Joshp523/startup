@@ -10,10 +10,10 @@ export function Unauthenticated(props) {
     const [displayError, setDisplayError] = useState(null);
     const navigate = useNavigate();
 
-    function handleLogin() {
-        //e.preventDefault();
+    async function handleLogin() {
+        e.preventDefault();
         try {
-            loginOrCreate(`/api/auth/login`);
+            await loginOrCreate(`/api/auth/login`);
             // localStorage.setItem('userName', name);
             // localStorage.setItem('familyId', familyId);
             // localStorage.setItem('password', password);
