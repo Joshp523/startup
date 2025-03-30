@@ -230,11 +230,11 @@ export function Dashboard() {
                                                 spendingData.netBalance,
                                             ],
                                             backgroundColor: [
-                                                'rgba(75, 192, 192, 0.6)', // Income: Teal
-                                                'rgba(255, 99, 132, 0.6)', // Expenses: Red
+                                                'rgba(75, 192, 192, 0.6)', 
+                                                'rgba(255, 99, 132, 0.6)', 
                                                 spendingData.netBalance >= 0
-                                                    ? 'rgba(54, 162, 235, 0.6)' // Net Balance (positive): Blue
-                                                    : 'rgba(255, 206, 86, 0.6)', // Net Balance (negative): Yellow
+                                                    ? 'rgba(54, 162, 235, 0.6)' 
+                                                    : 'rgba(255, 206, 86, 0.6)', 
                                             ],
                                             borderColor: [
                                                 'rgba(75, 192, 192, 1)',
@@ -259,7 +259,7 @@ export function Dashboard() {
                                     },
                                     plugins: {
                                         legend: {
-                                            display: false, // Hide legend since we only have one dataset
+                                            display: false,
                                         },
                                     },
                                 }}
@@ -287,7 +287,7 @@ export function Dashboard() {
                                                 'rgba(83, 102, 255, 0.6)',
                                                 'rgba(255, 99, 255, 0.6)',
                                                 'rgba(99, 255, 132, 0.6)',
-                                            ], // Add more colors if you have more categories
+                                            ], 
                                             borderColor: [
                                                 'rgba(255, 99, 132, 1)',
                                                 'rgba(54, 162, 235, 1)',
