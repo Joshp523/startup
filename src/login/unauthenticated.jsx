@@ -10,7 +10,7 @@ export function Unauthenticated(props) {
     const [displayError, setDisplayError] = useState(null);
     const navigate = useNavigate();
 
-    async function handleLogin() {
+    async function handleLogin(e) {
         e.preventDefault();
         try {
             await loginOrCreate(`/api/auth/login`);
@@ -22,10 +22,10 @@ export function Unauthenticated(props) {
         }
     }
 
-    function handleCreateAccount() {
+    async function handleCreateAccount(e) {
         //e.preventDefault();
         try {
-            loginOrCreate(`/api/auth/create`);
+            await loginOrCreate(`/api/auth/create`);
              // localStorage.setItem('userName', name);
             // localStorage.setItem('familyId', familyId);
             // localStorage.setItem('password', password);
@@ -45,12 +45,13 @@ export function Unauthenticated(props) {
         if (response?.status === 200) {
             localStorage.setItem('name', name);
             localStorage.setItem('familyId', familyId);
-            props.onLogin(userName);
+            props.onLogin(name);
+            navigate('/authenticated');
         } else {
             const body = await response.json();
             setDisplayError(`⚠ Error: ${body.msg}`);
         }
-        navigate('/authenticated')
+        
     }
 
     return (
@@ -91,7 +92,7 @@ export function Unauthenticated(props) {
                     <Button
                         type="submit"
                         className="button"
-                        disabled={!name || !password}
+                        disabled={!name || !password || !familyId}
                     >
                         Login
                     </Button>
@@ -99,7 +100,7 @@ export function Unauthenticated(props) {
                         type="button"
                         className="button"
                         onClick={handleCreateAccount}
-                        disabled={!name || !password}
+                        disabled={!name || !password || !familyId}
                     >
                         Create an account
                     </Button>

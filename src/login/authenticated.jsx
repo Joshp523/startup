@@ -9,7 +9,7 @@ export function Authenticated(props) {
   const navigate = useNavigate();
 
   function logout() {
-    fetch(`/api/auth/logout`, {
+    (`/api/auth/logout`, {
       method: 'delete',
     })
       .catch(() => {

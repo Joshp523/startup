@@ -47,13 +47,12 @@ export function Dashboard() {
     const [goals, setGoals] = React.useState([]);
 
     React.useEffect(() => {
-        fetch('/api/goalData', {
+        fetch('/api/goalData?familyId=${encodeURIComponent(familyId)}', {
             method: 'GET',
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ familyId })
         })
             .then((response) => response.json())
             .then((goals) => {
@@ -65,13 +64,12 @@ export function Dashboard() {
     const [transactions, setTransactions] = React.useState([]);
 
     React.useEffect(() => {
-        fetch('/api/budgetData', {
+        fetch(`/api/budgetData?familyId=${encodeURIComponent(familyId)}`, {
             method: 'GET',
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ familyId })
         })
             .then((response) => response.json())
             .then((transactions) => {

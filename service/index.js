@@ -3,16 +3,15 @@ const bcrypt = require('bcryptjs');
 const express = require('express');
 const uuid = require('uuid');
 const app = express();
+const port = process.argv.length > 2 ? process.argv[2] : 4000;
 
 const authCookieName = 'token';
 
 // The scores and users are saved in memory and disappear whenever the service is restarted.
 let users = [];
-let familyData = {};
+let budgetData = {};
 let goalData = {};
 
-// The service port. In production the front-end code is statically hosted by the service on the same port.
-const port = process.argv.length > 2 ? process.argv[2] : 4000;
 
 // JSON body parsing using built-in middleware
 app.use(express.json());
@@ -80,11 +79,11 @@ const verifyAuth = async (req, res, next) => {
 
 // GetfamilyData returns the family data
 apiRouter.get('/budgetData', verifyAuth, (_req, res) => {
-    res.send(budgetData[req.data.familyId]);
+    res.send(budgetData[req.query.familyId]);
 });
 
 apiRouter.get('/goalData', verifyAuth, (_req, res) => {
-    res.send(goalData[req.data.familyId]);
+    res.send(goalData[req.query.familyId]);
 });
 
 // PostfamilyData updates the family data

@@ -8,20 +8,19 @@ export function Transactions() {
     const [familyId, setFamilyId] = useState(localStorage.getItem('familyId'));
     
         React.useEffect(() => {
-            fetch('/api/budgetData', {
+            fetch(`/api/budgetData?familyId=${encodeURIComponent(familyId)}`, {
                 method: 'GET',
                 credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ familyId })
             })
                 .then((response) => response.json())
                 .then((transactions) => {
                     setTransactions(transactions);
                 })
                 .catch((error) => console.error("Error fetching transactions:", error));
-        }, [transactionUpdate, familyId]);
+        }, [ familyId ]);
 
     // useEffect(() => {
     //     const handleStorageChange = () => {
