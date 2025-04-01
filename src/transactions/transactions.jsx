@@ -43,7 +43,7 @@ export function Transactions() {
 
     const getTransactionRow = () => {
         return transactions.map((transaction) => (
-            <div className="transaction-row" key={transaction.id}>
+            <div className="transaction-row" key={transaction.id || index}>
                 <span className="date">{new Date(transaction.date).toLocaleDateString()}</span>
                 <span
                     style={{ color: transaction.type === 'Income' ? 'green' : 'red' }}

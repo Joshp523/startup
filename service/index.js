@@ -112,7 +112,8 @@ apiRouter.get('/goalData', verifyAuth, (req, res) => {
 
 // PostfamilyData updates the family data
 apiRouter.post('/budgetData', verifyAuth, (req, res) => {
-    budgetData[req.body.familyId].push(req.body.transaction);
+    const transactionWithId = { ...req.body.transaction, id: uuid.v4() }; 
+    budgetData[req.body.familyId].push(transactionWithId);
     res.send(budgetData);
 });
 
