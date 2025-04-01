@@ -424,7 +424,7 @@ export function Dashboard() {
                     <ul>
                         {goals.map((g) => (
                             <li key={g.id}>
-                                Goal: ${Number(g.goal).toFixed(2)} (Set on {new Date(g.date).toLocaleDateString()})
+                                Goal:  {g.goal}   (Set on {new Date(g.date).toLocaleDateString()})
                             </li>
                         ))}
                     </ul>
