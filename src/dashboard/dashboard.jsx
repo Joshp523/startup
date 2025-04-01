@@ -47,7 +47,7 @@ export function Dashboard() {
     const [goals, setGoals] = React.useState([]);
 
     React.useEffect(() => {
-        fetch('/api/goalData?familyId=${encodeURIComponent(familyId)}', {
+        fetch(`/api/goalData?familyId=${encodeURIComponent(familyId)}`, {
             method: 'GET',
             credentials: 'include',
             headers: {
@@ -58,8 +58,9 @@ export function Dashboard() {
             .then((goals) => {
                 setGoals(goals);
             })
-            .catch((error) => console.error("Error fetching goals:", error));
+            .catch((error) => console.error("Error fetching transactions:", error));
     }, [goal, familyId]);
+
 
     const [transactions, setTransactions] = React.useState([]);
 

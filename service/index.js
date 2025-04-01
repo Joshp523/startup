@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const express = require('express');
 const uuid = require('uuid');
 const app = express();
-const port = process.argv.length > 2 ? process.argv[2] : 4000;
+const port = 4000;
 
 const authCookieName = 'token';
 
@@ -34,8 +34,15 @@ apiRouter.post('/auth/create', async (req, res) => {
             res.status(409).send({ msg: 'Existing user' });
         }
     } else {
-        const user = await createUser(req.body.name, req.body.password);
-
+        const user = await createUser(req.body.name, req.body.password, req.body.familyId);
+        if (!budgetData[familyId]) {
+            budgetData[familyId] = [];
+            console.log(`Initialized budgetData for familyId: ${familyId}`);
+          }
+          if (!goalData[familyId]) {
+            goalData[familyId] = [];
+            console.log(`Initialized goalData for familyId: ${familyId}`);
+          }
         setAuthCookie(res, user.token);
         res.send({ name: user.name });
     }
