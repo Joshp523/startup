@@ -26,25 +26,39 @@ app.use(express.static('public'));
 var apiRouter = express.Router();
 app.use(`/api`, apiRouter);
 
-// CreateAuth a new user
 apiRouter.post('/auth/create', async (req, res) => {
-    if (user = await findUser('name', req.body.name)) {
-        const familyMatch = await bcrypt.compare(req.body.familyId, user.family);
-        if (familyMatch) {
-            res.status(409).send({ msg: 'Existing user' });
+    console.log('Received /api/auth/create request');
+    console.log('Request body:', req.body);
+    try {
+        const { name, password, familyId } = req.body;
+        console.log('Destructured values:', { name, password, familyId });
+
+        if (!name || !password || !familyId) {
+            return res.status(400).send({ msg: 'Name, password, and familyId are required' });
         }
-    } else {
-        const user = await createUser(req.body.name, req.body.password, req.body.familyId);
+
+        const user = await findUser('name', name);
+        if (user) {
+            const familyMatch = await bcrypt.compare(familyId, user.family);
+            if (familyMatch) {
+                return res.status(409).send({ msg: 'Existing user' });
+            }
+        }
+
+        const newUser = await createUser(name, password, familyId);
         if (!budgetData[familyId]) {
             budgetData[familyId] = [];
             console.log(`Initialized budgetData for familyId: ${familyId}`);
-          }
-          if (!goalData[familyId]) {
+        }
+        if (!goalData[familyId]) {
             goalData[familyId] = [];
             console.log(`Initialized goalData for familyId: ${familyId}`);
-          }
-        setAuthCookie(res, user.token);
-        res.send({ name: user.name });
+        }
+        setAuthCookie(res, newUser.token);
+        res.send({ name: newUser.name });
+    } catch (error) {
+        console.error('Error in /api/auth/create:', error);
+        res.status(500).send({ msg: 'Server error', error: error.message });
     }
 });
 
@@ -74,10 +88,13 @@ apiRouter.delete('/auth/logout', async (req, res) => {
     res.status(204).end();
 });
 
-// Middleware to verify that the user is authorized to call an endpoint
 const verifyAuth = async (req, res, next) => {
-    const user = await findUser('token', req.cookies[authCookieName]);
+    const token = req.cookies[authCookieName];
+    console.log('Auth token received:', token);
+    const user = await findUser('token', token);
+    console.log('User found:', user);
     if (user) {
+        req.user = user;
         next();
     } else {
         res.status(401).send({ msg: 'Unauthorized' });
@@ -85,11 +102,11 @@ const verifyAuth = async (req, res, next) => {
 };
 
 // GetfamilyData returns the family data
-apiRouter.get('/budgetData', verifyAuth, (_req, res) => {
+apiRouter.get('/budgetData', verifyAuth, (req, res) => {
     res.send(budgetData[req.query.familyId]);
 });
 
-apiRouter.get('/goalData', verifyAuth, (_req, res) => {
+apiRouter.get('/goalData', verifyAuth, (req, res) => {
     res.send(goalData[req.query.familyId]);
 });
 
@@ -116,6 +133,16 @@ app.use((_req, res) => {
 });
 
 async function createUser(name, password, familyId) {
+    if (!name || typeof name !== 'string' || name.trim() === '') {
+        throw new Error('Name must be a non-empty string');
+    }
+    if (!password || typeof password !== 'string' || password.trim() === '') {
+        throw new Error('Password must be a non-empty string');
+    }
+    if (!familyId || typeof familyId !== 'string' || familyId.trim() === '') {
+        throw new Error('FamilyId must be a non-empty string');
+    }
+
     const passwordHash = await bcrypt.hash(password, 10);
     const familyIdHash = await bcrypt.hash(familyId, 10);
 
@@ -124,6 +151,7 @@ async function createUser(name, password, familyId) {
         family: familyIdHash,
         password: passwordHash,
         token: uuid.v4(),
+        familyId: familyId, 
     };
     users.push(user);
 
@@ -139,7 +167,7 @@ async function findUser(field, value) {
 // setAuthCookie in the HTTP response
 function setAuthCookie(res, authToken) {
     res.cookie(authCookieName, authToken, {
-        secure: true,
+        secure: false,
         httpOnly: true,
         sameSite: 'strict',
     });

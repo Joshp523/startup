@@ -38,8 +38,10 @@ export function Unauthenticated(props) {
         const response = await fetch(endpoint, {
             method: 'post',
             body: JSON.stringify({ name: name, password: password, familyId: familyId }),
+            credentials: 'include',
             headers: {
                 'Content-type': 'application/json; charset=UTF-8',
+            
             },
         });
         if (response?.status === 200) {
