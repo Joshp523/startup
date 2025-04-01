@@ -15,6 +15,8 @@ export function Dashboard() {
     const [aiSummary, setAiSummary] = useState("Loading AI insights...");
     const navigate = useNavigate();
     const [transactionUpdate, setTransactionUpdate] = useState(false);
+    const [goals, setGoals] = React.useState([]);
+    const [transactions, setTransactions] = React.useState([]);
 
     const [familyId, setFamilyId] = useState(localStorage.getItem('familyId'));
 
@@ -51,57 +53,55 @@ export function Dashboard() {
 
 
         if (familyId) {
-            const budgetData = getTransactions();
-
-            const goalData = getGoals();
-
-            setTransactions(budgetData);
-            setGoals(goalData);
-
-            generateGraphs(budgetData);
-            generateAiSummary(budgetData, goalData);
+            Promise.all([getTransactions(), getGoals()])
+                .then(([budgetData, goalData]) => {
+                    setTransactions(budgetData); 
+                    setGoals(goalData); 
+                    generateGraphs(budgetData); 
+                    generateAiSummary(budgetData, goalData);
+                })
+                .catch((error) => {
+                    console.error("Error fetching data:", error);
+                    setAiSummary("Unable to generate insights at the moment.");
+                });
         } else {
-            setAiSummary("Please log in to view insights.");
-            setSpendingData(null);
+            navigate('/login');
         }
 
         return () => window.removeEventListener('storage', handleStorageChange);
     }, [transactionUpdate, familyId]);
 
-    const [goals, setGoals] = React.useState([]);
+    
 
-    React.useEffect(() => {
-        fetch(`/api/goalData?familyId=${encodeURIComponent(familyId)}`, {
-            method: 'GET',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        })
-            .then((response) => response.json())
-            .then((goals) => {
-                setGoals(goals);
-            })
-            .catch((error) => console.error("Error fetching transactions:", error));
-    }, [transactionUpdate, familyId]);
+    // React.useEffect(() => {
+    //     fetch(`/api/goalData?familyId=${encodeURIComponent(familyId)}`, {
+    //         method: 'GET',
+    //         credentials: 'include',
+    //         headers: {
+    //             'Content-Type': 'application/json'
+    //         },
+    //     })
+    //         .then((response) => response.json())
+    //         .then((goals) => {
+    //             setGoals(goals);
+    //         })
+    //         .catch((error) => console.error("Error fetching transactions:", error));
+    // }, [transactionUpdate, familyId]);
 
-
-    const [transactions, setTransactions] = React.useState([]);
-
-    React.useEffect(() => {
-        fetch(`/api/budgetData?familyId=${encodeURIComponent(familyId)}`, {
-            method: 'GET',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        })
-            .then((response) => response.json())
-            .then((transactions) => {
-                setTransactions(transactions);
-            })
-            .catch((error) => console.error("Error fetching transactions:", error));
-    }, [transactionUpdate, familyId]);
+    // React.useEffect(() => {
+    //     fetch(`/api/budgetData?familyId=${encodeURIComponent(familyId)}`, {
+    //         method: 'GET',
+    //         credentials: 'include',
+    //         headers: {
+    //             'Content-Type': 'application/json'
+    //         },
+    //     })
+    //         .then((response) => response.json())
+    //         .then((transactions) => {
+    //             setTransactions(transactions);
+    //         })
+    //         .catch((error) => console.error("Error fetching transactions:", error));
+    // }, [transactionUpdate, familyId]);
 
     const handleGoal = (e) => {
         e.preventDefault();
