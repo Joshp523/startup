@@ -136,13 +136,13 @@ img {
 .transaction-header span.date,
 .transaction-row span.date {
 
-    text-align: left;
+    text-align: center;
 }
 
 .transaction-header span.amount,
 .transaction-row span.amount {
 
-    text-align: right;
+    text-align: center;
 }
 
 .transaction-header span.category,

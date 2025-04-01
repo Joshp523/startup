@@ -18,6 +18,28 @@ export function Dashboard() {
 
     const [familyId, setFamilyId] = useState(localStorage.getItem('familyId'));
 
+    async function getTransactions() {
+        const budgetResponse = await fetch(`/api/budgetData?familyId=${encodeURIComponent(familyId)}`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+        });
+        if (budgetResponse.status !== 200) throw new Error('Failed to fetch budget data');
+        const budgetData = await budgetResponse.json();
+        return budgetData;
+    }
+
+    async function getGoals() {
+        const goalResponse = await fetch(`/api/goalData?familyId=${encodeURIComponent(familyId)}`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+        });
+        if (goalResponse.status !== 200) throw new Error('Failed to fetch goal data');
+        const goalData = await goalResponse.json();
+        return goalData;
+    }
+
     useEffect(() => {
 
         const handleStorageChange = () => {
@@ -29,8 +51,15 @@ export function Dashboard() {
 
 
         if (familyId) {
-            generateGraphs();
-            generateAiSummary();
+            const budgetData = getTransactions();
+
+            const goalData = getGoals();
+
+            setTransactions(budgetData);
+            setGoals(goalData);
+
+            generateGraphs(budgetData);
+            generateAiSummary(budgetData, goalData);
         } else {
             setAiSummary("Please log in to view insights.");
             setSpendingData(null);
@@ -38,11 +67,6 @@ export function Dashboard() {
 
         return () => window.removeEventListener('storage', handleStorageChange);
     }, [transactionUpdate, familyId]);
-
-    useEffect(() => {
-        generateAiSummary();
-        generateGraphs();
-    }, [transactionUpdate]);
 
     const [goals, setGoals] = React.useState([]);
 
@@ -59,7 +83,7 @@ export function Dashboard() {
                 setGoals(goals);
             })
             .catch((error) => console.error("Error fetching transactions:", error));
-    }, [goal, familyId]);
+    }, [transactionUpdate, familyId]);
 
 
     const [transactions, setTransactions] = React.useState([]);
@@ -173,20 +197,20 @@ export function Dashboard() {
 
     const [spendingData, setSpendingData] = useState(null);
 
-    async function generateGraphs() {
-        const data = prepareDataForCharts(transactions);
+    async function generateGraphs(budgetData) {
+        const data = prepareDataForCharts(budgetData);
         setSpendingData(data);
     }
 
-    async function generateAiSummary() {
+    async function generateAiSummary(budgetData, goalData) {
 
-        if (transactions.length === 0) {
+        if (budgetData.length === 0) {
             setAiSummary("No transactions recorded yet. Start logging to get AI insights!");
             return;
         }
 
-        const spendingSummary = summarizeSpending(transactions);
-        const goalSummary = summarizeGoals(goals);
+        const spendingSummary = summarizeSpending(budgetData);
+        const goalSummary = summarizeGoals(goalData);
 
         try {
             const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -212,12 +236,21 @@ export function Dashboard() {
         }
     }
     async function addTransaction(familyId, transaction) {
-        await fetch('/api/budgetData', {
-            method: 'POST',
-            credentials: 'include',
-            headers: { 'content-type': 'application/json' },
-            body: JSON.stringify({ familyId, transaction }),
-        });
+        try {
+            const response = await fetch('/api/budgetData', {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ familyId, transaction }),
+            });
+        } catch (error) {
+            console.error('Error adding transaction:', error.message);
+            if (error.message.includes('401')) {
+                setAiSummary('Session expired. Please log in again.');
+                navigate('/login');
+            }
+            throw error;
+        }
     }
 
     async function addGoal(familyId, goal) {
