@@ -118,7 +118,7 @@ apiRouter.post('/budgetData', verifyAuth, (req, res) => {
 });
 
 apiRouter.post('/goalData', verifyAuth, (req, res) => {
-    goalData[req.data.familyId].push(req.body.goal);
+    goalData[req.query.familyId].push(req.body.goal);
     res.send(goalData);
 });
 

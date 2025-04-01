@@ -71,38 +71,6 @@ export function Dashboard() {
         return () => window.removeEventListener('storage', handleStorageChange);
     }, [transactionUpdate, familyId]);
 
-    
-
-    // React.useEffect(() => {
-    //     fetch(`/api/goalData?familyId=${encodeURIComponent(familyId)}`, {
-    //         method: 'GET',
-    //         credentials: 'include',
-    //         headers: {
-    //             'Content-Type': 'application/json'
-    //         },
-    //     })
-    //         .then((response) => response.json())
-    //         .then((goals) => {
-    //             setGoals(goals);
-    //         })
-    //         .catch((error) => console.error("Error fetching transactions:", error));
-    // }, [transactionUpdate, familyId]);
-
-    // React.useEffect(() => {
-    //     fetch(`/api/budgetData?familyId=${encodeURIComponent(familyId)}`, {
-    //         method: 'GET',
-    //         credentials: 'include',
-    //         headers: {
-    //             'Content-Type': 'application/json'
-    //         },
-    //     })
-    //         .then((response) => response.json())
-    //         .then((transactions) => {
-    //             setTransactions(transactions);
-    //         })
-    //         .catch((error) => console.error("Error fetching transactions:", error));
-    // }, [transactionUpdate, familyId]);
-
     const handleGoal = (e) => {
         e.preventDefault();
         const newGoal = {
@@ -254,11 +222,11 @@ export function Dashboard() {
     }
 
     async function addGoal(familyId, goal) {
-        await fetch('/api/goalData', {
+        await fetch(`/api/goalData?familyId=${encodeURIComponent(familyId)}`, {
             method: 'POST',
             credentials: 'include',
             headers: { 'content-type': 'application/json' },
-            body: JSON.stringify({ familyId, goal }),
+            body: JSON.stringify({ goal }),
         });
     }
 
