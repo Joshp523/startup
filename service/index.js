@@ -24,7 +24,7 @@ app.use(`/api`, apiRouter);
 apiRouter.post('/auth/create', async (req, res) => {
     try {
         const { name, password, familyId } = req.body;
-            if (!name || !password || !familyId) {
+        if (!name || !password || !familyId) {
             return res.status(400).send({ msg: 'Name, password, and familyId are required' });
         }
         const user = await findUser('name', name);
@@ -83,8 +83,8 @@ const verifyAuth = async (req, res, next) => {
 };
 
 // GetfamilyData returns the family data
-apiRouter.get('/budgetData', verifyAuth, (req, res) => {
-    const budgetData = DB.getTransactions(req.query.familyId);
+apiRouter.get('/budgetData', verifyAuth, async (req, res) => {
+    const budgetData = await DB.getTransactions(req.query.familyId);
     res.send(budgetData);
 });
 
@@ -97,15 +97,15 @@ apiRouter.get('/goalData', verifyAuth, (req, res) => {
 
 // PostfamilyData updates the family data
 apiRouter.post('/budgetData', verifyAuth, async (req, res) => {
-    const transactionWithId = { ...req.body.transaction, id: uuid.v4(), family: req.user.familyId }; 
+    const transactionWithId = { ...req.body.transaction, id: uuid.v4(), family: req.user.familyId };
     const result = await DB.addTransaction(transactionWithId);
     res.send(result);
 });
 
 apiRouter.post('/goalData', verifyAuth, (req, res) => {
-    const goal = { 
+    const goal = {
         ...req.body.goal,
-        family: req.user.familyId 
+        family: req.user.familyId
     };
     const result = DB.addGoal(goal);
     res.send(result);
@@ -141,7 +141,7 @@ async function createUser(name, password, familyId) {
         family: familyIdHash,
         password: passwordHash,
         token: uuid.v4(),
-        familyId: familyId, 
+        familyId: familyId,
     };
     await DB.addUser(user);
 
@@ -153,8 +153,8 @@ async function findUser(field, value) {
 
     if (field === 'token') {
         return DB.getUserByToken(value);
-      }
-      return DB.getUser(value);
+    }
+    return DB.getUser(value);
 }
 
 // setAuthCookie in the HTTP response

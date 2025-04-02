@@ -18,7 +18,7 @@ const transactionCollection = db.collection('transaction');
       process.exit(1);
     }
   })();
-  
+
 async function getUser(name) {
   return userCollection.findOne({ name: name });
 }
@@ -41,7 +41,8 @@ async function addTransaction(transaction) {
 }
 
 async function getTransactions(family) {
-  return transactionCollection.find({family: family}).toArray();
+  const result = await transactionCollection.find({ family: family }).toArray();
+  return result || [];
 }
 
 async function addGoal(goal) {

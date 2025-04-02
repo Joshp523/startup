@@ -15,33 +15,22 @@ export function Transactions() {
                     'Content-Type': 'application/json'
                 },
             })
-                .then((response) => response.json())
-                .then((transactions) => {
-                    setTransactions(transactions);
-                })
+            .then((response) => {
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                return response.json();
+              })
+              .then((data) => {
+                // Ensure data is an array; default to empty array if not
+                setTransactions(Array.isArray(data) ? data : []);
+              })
                 .catch((error) => console.error("Error fetching transactions:", error));
         }, [ familyId ]);
 
-    // useEffect(() => {
-    //     const handleStorageChange = () => {
-    //         const newFamilyId = localStorage.getItem('familyId');
-    //         setFamilyId(newFamilyId);
-    //     };
-
-    //     window.addEventListener('storage', handleStorageChange);
-
-    //     if (familyId) {
-    //         const allData = JSON.parse(localStorage.getItem('budgetData')) || {};
-    //         const savedTransactions = allData[familyId] || [];
-    //         setTransactions(savedTransactions);
-    //     } else {
-    //         setTransactions([]);
-    //     }
-
-    //     return () => window.removeEventListener('storage', handleStorageChange);
-    // }, [familyId]);
-
     const getTransactionRow = () => {
+        if (!Array.isArray(transactions)) {
+            console.error("transactions is not an array:", transactions);
+            return null; // Or a fallback UI
+          }
         return transactions.map((transaction) => (
             <div className="transaction-row" key={transaction.id || index}>
                 <span className="date">{new Date(transaction.date).toLocaleDateString()}</span>
