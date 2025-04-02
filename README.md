@@ -66,15 +66,17 @@ _Depending on difficulty, these features could be added:_
 * **Bundled and Transpiled** - done!
 
 ## React Phase 2 Deliverable
-
 * **All functionality implemented** - it makes two different kinds of graphs in real time from the data stored in local storage. Users can input transactions and goals which are stored in local memory.
 * **Hooks** - Used UseEffect to update graphics and transaction list in Transactions and Dashboard and useState to input variable values for storage
 
 ## Service Deliverable
-
 * **Node.js/Express HTTP service** - done!
 * **Static middleware for frontend** - done!
 * **Calls to third party endpoints** - calls openAI to give a summary and chartJS to generate some pretty charts.
 * **Backend service endpoints** - Placeholders for login that stores the current user on the server. Endpoints for storing and retrieving transactions and goals from the backend server
 * **Frontend calls service endpoints** - I did this using the fetch function.
 * **Supports registration, login, logout, and restricted endpoint** -done! data can only be viewed by users with the corresponding family ID.
+
+## CD/Login Deliverable
+* **Stores data in MongoDB** - done!
+* **Use MongoDB to store credentials** - Stores Users and the goals and transactions specific to them.
