@@ -49,6 +49,7 @@ async function addGoal(goal) {
   const result = await goalCollection.insertOne(goal);
   return { result, _id: result.insertedId };
 }
+
 async function getGoals(family) {
   return goalCollection.find({family: family}).toArray();
 }

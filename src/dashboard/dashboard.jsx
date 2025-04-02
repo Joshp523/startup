@@ -226,7 +226,7 @@ export function Dashboard() {
             method: 'POST',
             credentials: 'include',
             headers: { 'content-type': 'application/json' },
-            body: JSON.stringify({ goal }),
+            body: JSON.stringify({ goal, familyId }),
         });
     }
 
@@ -423,7 +423,7 @@ export function Dashboard() {
                 {goals.length > 0 ? (
                     <ul>
                         {goals.map((g) => (
-                            <li key={g.id}>
+                            <li key={g._id}>
                                 Goal:  {g.goal}   (Set on {new Date(g.date).toLocaleDateString()})
                             </li>
                         ))}
