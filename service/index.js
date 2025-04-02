@@ -89,7 +89,9 @@ apiRouter.get('/budgetData', verifyAuth, (req, res) => {
 });
 
 apiRouter.get('/goalData', verifyAuth, (req, res) => {
+    console.log('goalData endpoint reached', req.query.familyId);
     const goalData = DB.getGoals(req.query.familyId);
+    console.log('completed getGoals call to DB', goalData);
     res.send(goalData);
 });
 
