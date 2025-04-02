@@ -106,7 +106,7 @@ apiRouter.post('/budgetData', verifyAuth, async (req, res) => {
 apiRouter.post('/goalData', verifyAuth, async (req, res) => {
     const goal = {
         ...req.body.goal,
-        familyId: req.user.familyId,
+        family: req.user.familyId,
     };
     const result = await DB.addGoal(goal);
     res.send(result);

@@ -220,6 +220,7 @@ export function Dashboard() {
             }
             throw error;
         }
+        setTransactionUpdate((prev) => prev + 1);
     }
 
     async function addGoal(familyId, goal) {
@@ -229,6 +230,7 @@ export function Dashboard() {
             headers: { 'content-type': 'application/json' },
             body: JSON.stringify({ goal, family: familyId }),
         });
+        setTransactionUpdate((prev) => prev + 1);
     }
 
     return (
