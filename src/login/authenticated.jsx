@@ -9,15 +9,17 @@ export function Authenticated(props) {
   const navigate = useNavigate();
 
   function logout() {
-    (`/api/auth/logout`, {
-      method: 'delete',
+    fetch(`/api/auth/logout`, {
+      method: 'DELETE',
+      credentials: 'include',
     })
       .catch(() => {
-        // Logout failed. Assuming offline
+        console.error('Logout request failed');
       })
       .finally(() => {
-        localStorage.removeItem('userName');
+        localStorage.removeItem('name', 'familyId');
         props.onLogout();
+        navigate('/login');
       });
   }
 
@@ -30,7 +32,6 @@ export function Authenticated(props) {
       <Button
         variant='secondary'
         onClick={() => {
-          console.log('Logout button clicked manually');
           logout();
         }}
       >
