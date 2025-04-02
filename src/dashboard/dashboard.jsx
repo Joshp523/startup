@@ -39,6 +39,7 @@ export function Dashboard() {
         });
         if (goalResponse.status !== 200) throw new Error('Failed to fetch goal data');
         const goalData = await goalResponse.json();
+        console.log('goalData from getGoals:', goalData);
         return goalData;
     }
 
@@ -226,7 +227,7 @@ export function Dashboard() {
             method: 'POST',
             credentials: 'include',
             headers: { 'content-type': 'application/json' },
-            body: JSON.stringify({ goal, familyId }),
+            body: JSON.stringify({ goal, family: familyId }),
         });
     }
 

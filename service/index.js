@@ -88,9 +88,10 @@ apiRouter.get('/budgetData', verifyAuth, async (req, res) => {
     res.send(budgetData);
 });
 
-apiRouter.get('/goalData', verifyAuth, (req, res) => {
+apiRouter.get('/goalData', verifyAuth, async (req, res) => {
     console.log('goalData endpoint reached', req.query.familyId);
-    const goalData = DB.getGoals(req.query.familyId);
+    const family = req.user.familyId || req.user.family;
+    const goalData = await DB.getGoals(family);
     console.log('completed getGoals call to DB', goalData);
     res.send(goalData);
 });
@@ -102,12 +103,12 @@ apiRouter.post('/budgetData', verifyAuth, async (req, res) => {
     res.send(result);
 });
 
-apiRouter.post('/goalData', verifyAuth, (req, res) => {
+apiRouter.post('/goalData', verifyAuth, async (req, res) => {
     const goal = {
         ...req.body.goal,
         familyId: req.user.familyId,
     };
-    const result = DB.addGoal(goal);
+    const result = await DB.addGoal(goal);
     res.send(result);
 });
 
