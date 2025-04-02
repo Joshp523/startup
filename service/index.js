@@ -3,15 +3,10 @@ const bcrypt = require('bcryptjs');
 const express = require('express');
 const uuid = require('uuid');
 const app = express();
-const port = 4000;
+const port = process.argv.length > 2 ? process.argv[2] : 4000;
+const DB = require('./database.js');
 
 const authCookieName = 'token';
-
-// The scores and users are saved in memory and disappear whenever the service is restarted.
-let users = [];
-let budgetData = {};
-let goalData = {};
-
 
 // JSON body parsing using built-in middleware
 app.use(express.json());
@@ -27,16 +22,11 @@ var apiRouter = express.Router();
 app.use(`/api`, apiRouter);
 
 apiRouter.post('/auth/create', async (req, res) => {
-    console.log('Received /api/auth/create request');
-    console.log('Request body:', req.body);
     try {
         const { name, password, familyId } = req.body;
-        console.log('Destructured values:', { name, password, familyId });
-
-        if (!name || !password || !familyId) {
+            if (!name || !password || !familyId) {
             return res.status(400).send({ msg: 'Name, password, and familyId are required' });
         }
-
         const user = await findUser('name', name);
         if (user) {
             const familyMatch = await bcrypt.compare(familyId, user.family);
@@ -44,16 +34,7 @@ apiRouter.post('/auth/create', async (req, res) => {
                 return res.status(409).send({ msg: 'Existing user' });
             }
         }
-
         const newUser = await createUser(name, password, familyId);
-        if (!budgetData[familyId]) {
-            budgetData[familyId] = [];
-            console.log(`Initialized budgetData for familyId: ${familyId}`);
-        }
-        if (!goalData[familyId]) {
-            goalData[familyId] = [];
-            console.log(`Initialized goalData for familyId: ${familyId}`);
-        }
         setAuthCookie(res, newUser.token);
         res.send({ name: newUser.name });
     } catch (error) {
@@ -69,6 +50,7 @@ apiRouter.post('/auth/login', async (req, res) => {
         if (familyMatch) {
             if (await bcrypt.compare(req.body.password, user.password)) {
                 user.token = uuid.v4();
+                await DB.updateUser(user);
                 setAuthCookie(res, user.token);
                 res.send({ name: user.name });
                 return;
@@ -83,6 +65,7 @@ apiRouter.delete('/auth/logout', async (req, res) => {
     const user = await findUser('token', req.cookies[authCookieName]);
     if (user) {
         delete user.token;
+        await DB.updateUser(user);
     }
     res.clearCookie(authCookieName);
     res.status(204).end();
@@ -90,9 +73,7 @@ apiRouter.delete('/auth/logout', async (req, res) => {
 
 const verifyAuth = async (req, res, next) => {
     const token = req.cookies[authCookieName];
-    console.log('Auth token received:', token);
     const user = await findUser('token', token);
-    console.log('User found:', user);
     if (user) {
         req.user = user;
         next();
@@ -103,23 +84,29 @@ const verifyAuth = async (req, res, next) => {
 
 // GetfamilyData returns the family data
 apiRouter.get('/budgetData', verifyAuth, (req, res) => {
-    res.send(budgetData[req.query.familyId]);
-});
-
-apiRouter.get('/goalData', verifyAuth, (req, res) => {
-    res.send(goalData[req.query.familyId]);
-});
-
-// PostfamilyData updates the family data
-apiRouter.post('/budgetData', verifyAuth, (req, res) => {
-    const transactionWithId = { ...req.body.transaction, id: uuid.v4() }; 
-    budgetData[req.body.familyId].push(transactionWithId);
+    const budgetData = DB.getTransactions(req.query.familyId);
     res.send(budgetData);
 });
 
-apiRouter.post('/goalData', verifyAuth, (req, res) => {
-    goalData[req.query.familyId].push(req.body.goal);
+apiRouter.get('/goalData', verifyAuth, (req, res) => {
+    const goalData = DB.getGoals(req.query.familyId);
     res.send(goalData);
+});
+
+// PostfamilyData updates the family data
+apiRouter.post('/budgetData', verifyAuth, async (req, res) => {
+    const transactionWithId = { ...req.body.transaction, id: uuid.v4(), family: req.user.familyId }; 
+    const result = await DB.addTransaction(transactionWithId);
+    res.send(result);
+});
+
+apiRouter.post('/goalData', verifyAuth, (req, res) => {
+    const goal = { 
+        ...req.body.goal,
+        family: req.user.familyId 
+    };
+    const result = DB.addGoal(goal);
+    res.send(result);
 });
 
 
@@ -154,7 +141,7 @@ async function createUser(name, password, familyId) {
         token: uuid.v4(),
         familyId: familyId, 
     };
-    users.push(user);
+    await DB.addUser(user);
 
     return user;
 }
@@ -162,7 +149,10 @@ async function createUser(name, password, familyId) {
 async function findUser(field, value) {
     if (!value) return null;
 
-    return users.find((u) => u[field] === value);
+    if (field === 'token') {
+        return DB.getUserByToken(value);
+      }
+      return DB.getUser(value);
 }
 
 // setAuthCookie in the HTTP response
