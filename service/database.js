@@ -47,7 +47,7 @@ async function getTransactions(family) {
 
 async function addGoal(goal) {
   const result = await goalCollection.insertOne(goal);
-  return { ...goal, _id: result.insertedId };
+  return { result, _id: result.insertedId };
 }
 async function getGoals(family) {
   return goalCollection.find({family: family}).toArray();
