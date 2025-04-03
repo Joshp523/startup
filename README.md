@@ -80,3 +80,12 @@ _Depending on difficulty, these features could be added:_
 ## CD/Login Deliverable
 * **Stores data in MongoDB** - done!
 * **Use MongoDB to store credentials** - Stores Users and the goals and transactions specific to them.
+
+## WebSocket deliverable
+
+I'm really proud of this. My wife and I have already started using this for out family finances, and my extended family has checked it out too!
+
+* **Backend listens for WebSocket connection** - done!
+* **Frontend makes WebSocket connection** - done!
+* **Data sent over WebSocket connection** - done!
+* **WebSocket data displayed** - When one user marks that he has reached one of his financial goals, other users are alerted that he has achieved his goal. details are of course not shared for confidentiality, but his success is shared as part of the "gamification" incentive structure for responsible spending.
