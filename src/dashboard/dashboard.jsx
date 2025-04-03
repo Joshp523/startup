@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Bar, Pie, Line } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale, LineElement, PointElement } from 'chart.js';
+import { Transaction, Notifier } from './notifier';
 
 ChartJS.register(ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale, LineElement, PointElement);
 
@@ -108,6 +109,7 @@ export function Dashboard() {
         setCategory('');
         setNotes('');
         setTransactionUpdate((prev) => prev + 1);
+        Notifier.broadcastEvent(newTransaction, {});
         //navigate('/transactions');
     }
 
@@ -445,6 +447,12 @@ export function Dashboard() {
                 )}
             </div>
 
+            <div className="item">
+                <button onClick={() => navigate('/transactions')}
+                    className="button2">
+                    Transaction History
+                </button>
+            </div>
             <div className="item">
                 <button onClick={() => navigate('/transactions')}
                     className="button2">
