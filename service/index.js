@@ -5,8 +5,20 @@ const uuid = require('uuid');
 const app = express();
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
 const DB = require('./database.js');
-
 const authCookieName = 'token';
+const { WebSocketServer } = require('ws');
+const wss = new WebSocketServer({ port: 4000 });
+
+wss.on('connection', (ws) => {
+  ws.on('message', (data) => {
+    const msg = String.fromCharCode(...data);
+    console.log('received: %s', msg);
+
+    ws.send(`I heard you say "${msg}"`);
+  });
+
+  ws.send('Hello webSocket');
+});
 
 // JSON body parsing using built-in middleware
 app.use(express.json());

@@ -20,6 +20,15 @@ export function Dashboard() {
 
     const [familyId, setFamilyId] = useState(localStorage.getItem('familyId'));
 
+    const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
+    const socket = new WebSocket(`${protocol}://${window.location.host}`);
+
+    socket.onmessage = (event) => {
+        console.log('received: ', event.data);
+    };
+
+    socket.send('I am listening');
+
     async function getTransactions() {
         const budgetResponse = await fetch(`/api/budgetData?familyId=${encodeURIComponent(familyId)}`, {
             method: 'GET',
@@ -56,9 +65,9 @@ export function Dashboard() {
         if (familyId) {
             Promise.all([getTransactions(), getGoals()])
                 .then(([budgetData, goalData]) => {
-                    setTransactions(budgetData); 
-                    setGoals(goalData); 
-                    generateGraphs(budgetData); 
+                    setTransactions(budgetData);
+                    setGoals(goalData);
+                    generateGraphs(budgetData);
                     generateAiSummary(budgetData, goalData);
                 })
                 .catch((error) => {
