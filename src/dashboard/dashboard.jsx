@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Bar, Pie, Line } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale, LineElement, PointElement } from 'chart.js';
-import { Transaction, Notifier } from './notifier';
+import { Notifier } from '../notifier.js';
+
 
 ChartJS.register(ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale, LineElement, PointElement);
 
@@ -18,17 +19,10 @@ export function Dashboard() {
     const [transactionUpdate, setTransactionUpdate] = useState(false);
     const [goals, setGoals] = React.useState([]);
     const [transactions, setTransactions] = React.useState([]);
-
     const [familyId, setFamilyId] = useState(localStorage.getItem('familyId'));
-
     const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
-    const socket = new WebSocket(`${protocol}://${window.location.host}`);
 
-    socket.onmessage = (event) => {
-        console.log('received: ', event.data);
-    };
-
-    socket.send('I am listening');
+    const notifier = new Notifier();
 
     async function getTransactions() {
         const budgetResponse = await fetch(`/api/budgetData?familyId=${encodeURIComponent(familyId)}`, {
@@ -453,7 +447,7 @@ export function Dashboard() {
                 </button>
             </div>
             <div className="item">
-                <button onClick={() => Notifier.broadcastAchievement({name : localStorage.getItem('name')})}
+               <button onClick={() => notifier.broadcastEvent({ name: localStorage.getItem('name') })}
                     className="button2">
                     Cick if you met your goal!
                 </button>

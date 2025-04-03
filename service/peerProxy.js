@@ -1,35 +1,27 @@
-const { WebSocketServer } = require('ws');
+const { Server } = require('ws');
 
 function peerProxy(httpServer) {
-  // Create a websocket objectconst httpService = 
-  const socketServer = new WebSocketServer({ server: httpServer });
+    const wss = new Server({ server: httpServer, path: '/ws' });
 
-  socketServer.on('connection', (socket) => {
-    socket.isAlive = true;
+    wss.on('connection', (ws) => {
+        console.log('Client connected');
 
-    // Forward messages to everyone except the sender
-    socket.on('message', function message(data) {
-      socketServer.clients.forEach((client) => {
-        if (client !== socket && client.readyState === WebSocket.OPEN) {
-          client.send(data);
-        }
-      });
+        ws.on('message', (message) => {
+            const messageString = message.toString(); // Convert Buffer to 
+            console.log('Received:', messageString);
+
+            // Broadcast the message to all connected clients
+            wss.clients.forEach((client) => {
+                if (client.readyState === ws.OPEN) {
+                    client.send(messageString);
+                }
+            });
+        });
+
+        ws.on('close', () => {
+            console.log('Client disconnected');
+        });
     });
-
-    // Respond to pong messages by marking the connection alive
-    socket.on('pong', () => {
-      socket.isAlive = true;
-    });
-  });
-
-  // Periodically send out a ping message to make sure clients are alive
-  setInterval(() => {
-    socketServer.clients.forEach(function each(client) {
-      if (client.isAlive === false) return client.terminate();
-      client.isAlive = false;
-      client.ping();
-    });
-  }, 10000);
 }
 
 module.exports = { peerProxy };

@@ -1,4 +1,5 @@
 import { MessageDialog } from './login/messageDialog';
+import ReactDOM from 'react-dom/client';
 
 class Notifier {
 
@@ -17,22 +18,23 @@ class Notifier {
         };
         this.socket.onmessage = async (msg) => {
             try {
-                const userName = JSON.parse(await msg.name);
+                const { name: userName } = JSON.parse(msg.data);
                 this.receiveEvent(userName);
             } catch { }
         };
     }
     broadcastEvent(transaction) {
+    console.log('Attempting to broadcast event:', transaction);
+    if (this.socket.readyState === WebSocket.OPEN) {
         this.socket.send(JSON.stringify(transaction));
-    }
-    receiveEvent(userName) {
-        console.log(userName, "achieved a goal!");
-        const container = document.createElement('div');
-        document.body.appendChild(container);
-        const root = ReactDOM.createRoot(container);
-        root.render(<MessageDialog message={`${userName} achieved a goal!`} />);
-        
+        console.log('Event broadcasted successfully');
+    } else {
+        console.error('WebSocket is not open');
     }
 }
-const Notifier = new Notifier();
-export { Transaction, Notifier };
+    receiveEvent(userName) {
+        console.log(userName, "achieved a goal!");
+        alert(`${userName} achieved a goal!`);
+    }
+}
+export { Notifier };
