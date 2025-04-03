@@ -109,7 +109,6 @@ export function Dashboard() {
         setCategory('');
         setNotes('');
         setTransactionUpdate((prev) => prev + 1);
-        Notifier.broadcastEvent(newTransaction, {});
         //navigate('/transactions');
     }
 
@@ -454,9 +453,9 @@ export function Dashboard() {
                 </button>
             </div>
             <div className="item">
-                <button onClick={() => navigate('/transactions')}
+                <button onClick={() => Notifier.broadcastAchievement({name : localStorage.getItem('name')})}
                     className="button2">
-                    Transaction History
+                    Cick if you met your goal!
                 </button>
             </div>
         </main>

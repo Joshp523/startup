@@ -1,41 +1,36 @@
 import { MessageDialog } from './login/messageDialog';
 
-const Transaction = {
-    amount: Number(amount),
-    type,
-    category,
-    notes,
-    member: localStorage.getItem('name'),
-    date: new Date().toISOString(),
-    family: localStorage.getItem('familyId'),
-};
-
 class Notifier {
-    events = [];
-    handlers = [];
 
     constructor() {
         let port = window.location.port;
         const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
         this.socket = new WebSocket(`${protocol}://${window.location.hostname}:${port}/ws`);
-        this.socket.onopen = (event) => {
-            this.receiveEvent(new EventMessage('Startup', Transaction.family, { msg: 'connected' }));
+        this.socket.onopen = () => {
+            console.log('WebSocket connection established');
         };
-        this.socket.onclose = (event) => {
-            this.receiveEvent(new EventMessage('Startup', Transaction.family, { msg: 'disconnected' }));
+        this.socket.onclose = () => {
+            console.log('WebSocket connection closed');
+        };
+        this.socket.onerror = (error) => {
+            console.error('WebSocket error:', error);
         };
         this.socket.onmessage = async (msg) => {
             try {
-                const event = JSON.parse(await msg.data.text());
-                this.receiveEvent(event);
+                const userName = JSON.parse(await msg.name);
+                this.receiveEvent(userName);
             } catch { }
         };
     }
     broadcastEvent(transaction) {
         this.socket.send(JSON.stringify(transaction));
     }
-    receiveEvent(event) {
-        MessageDialog({ message: event })
+    receiveEvent(userName) {
+        console.log(userName, "achieved a goal!");
+        const container = document.createElement('div');
+        document.body.appendChild(container);
+        const root = ReactDOM.createRoot(container);
+        root.render(<MessageDialog message={`${userName} achieved a goal!`} />);
         
     }
 }
