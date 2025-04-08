@@ -361,7 +361,7 @@ export function Dashboard() {
                                     labels: Object.keys(spendingData.incomeBreakdown),
                                     datasets: [
                                         {
-                                            label: 'Spending by Category',
+                                            label: 'Income by Category',
                                             data: Object.values(spendingData.incomeBreakdown),
                                             backgroundColor: [
                                                 'rgba(255, 99, 132, 0.6)',
