@@ -106,10 +106,26 @@ apiRouter.post('/budgetData', verifyAuth, async (req, res) => {
 apiRouter.post('/goalData', verifyAuth, async (req, res) => {
     const goal = {
         ...req.body.goal,
-        family: req.user.familyId,
+        family: req.user.familyId, 
+        setDate: req.body.goal.setDate || new Date().toISOString(), 
+        goalDate: req.body.goal.goalDate, 
+        category: req.body.goal.category, 
+        amount: req.body.goal.amount, 
     };
-    const result = await DB.addGoal(goal);
-    res.send(result);
+
+    if (!goal.goalDate || !goal.category || !goal.amount) {
+        return res.status(400).send({ msg: 'Goal must include goalDate, category, and amount' });
+    }
+
+    try {
+        const result = await DB.addGoal(goal);
+        res.send(result); 
+
+        console.log('Goal added successfully:', result); 
+    } catch (error) {
+        console.error('Error adding goal:', error);
+        res.status(500).send({ msg: 'Failed to add goal', error: error.message });
+    }
 });
 
 
