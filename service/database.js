@@ -36,13 +36,23 @@ async function updateUser(user) {
 }
 
 async function addTransaction(transaction) {
-    const result = await transactionCollection.insertOne(transaction);
-    return { ...transaction, _id: result.insertedId };
+  try {
+      const result = await transactionCollection.insertOne(transaction);
+      return { ...transaction, _id: result.insertedId };
+  } catch (error) {
+      console.error('Error inserting transaction:', error);
+      throw error;
+  }
 }
 
 async function getTransactions(family) {
-  const result = await transactionCollection.find({ family: family }).toArray();
-  return result || [];
+  try {
+      const result = await transactionCollection.find({ family }).toArray();
+      return result || [];
+  } catch (error) {
+      console.error('Error fetching transactions:', error);
+      throw error;
+  }
 }
 
 async function addGoal(goal) {

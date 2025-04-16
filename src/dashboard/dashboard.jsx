@@ -40,19 +40,31 @@ export function Dashboard() {
             header: true,
             skipEmptyLines: true,
             complete: async (results) => {
-                const transactions = results.data.map((row) => {
-                    const amount = Math.abs(parseFloat(row.Amount)); // Remove the sign from the amount
-                    const type = parseFloat(row.Amount) < 0 ? 'Expense' : 'Income'; // Determine type based on the sign
+                const transactions = results.data
+                    .map((row) => {
+                        const amount = Math.abs(parseFloat(row.Amount)); // Remove the sign from the amount
+                        const type = parseFloat(row.Amount) < 0 ? 'Expense' : 'Income'; // Determine type based on the sign
+                        const category = row.Category || 'Uncategorized';
+                        const date = row.Date ? new Date(row.Date).toISOString() : null;
 
-                    return {
-                        amount, // Unsigned amount
-                        type, // 'Expense' or 'Income'
-                        category: row.Category || 'Uncategorized', // Default to 'Uncategorized' if empty
-                        notes: row.Description || '', // Use the 'Description' column for notes
-                        member: localStorage.getItem('name'), // Add the member name from localStorage
-                        date: new Date(row.Date).toISOString(), // Convert the date to ISO format
-                    };
-                });
+                        // Validate required fields
+                        if (!amount || !type || !category || !date) {
+                            console.error("Invalid row in CSV:", row);
+                            return null; // Skip invalid rows
+                        }
+
+                        return {
+                            amount, // Unsigned amount
+                            type, // 'Expense' or 'Income'
+                            category, // Default to 'Uncategorized' if empty
+                            notes: row.Description || '', // Use the 'Description' column for notes
+                            member: localStorage.getItem('name'), // Add the member name from localStorage
+                            date, // Convert the date to ISO format
+                        };
+                    })
+                    .filter((transaction) => transaction !== null); // Remove invalid rows
+
+                console.log('Validated transactions:', transactions);
 
                 try {
                     // Send transactions to the backend
@@ -62,6 +74,7 @@ export function Dashboard() {
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ familyId, transactions }),
                     });
+                    console.log('Transactions uploaded successfully');
 
                     setTransactionUpdate((prev) => prev + 1);
                     alert('Transactions uploaded successfully!');

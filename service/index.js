@@ -82,21 +82,23 @@ const verifyAuth = async (req, res, next) => {
     }
 };
 
-// GetfamilyData returns the family data
 apiRouter.post('/budgetData', verifyAuth, async (req, res) => {
+    console.log('budgetData endpoint reached', req.body.familyId);
     const { familyId, transactions, transaction } = req.body;
 
     try {
         if (Array.isArray(transactions)) {
             // Handle bulk upload of transactions
             const results = await Promise.all(
-                transactions.map((t) => DB.addTransaction({ ...t, family: familyId }))
+                transactions.map((t) =>
+                    DB.addTransaction({ ...t, family: familyId })
+                )
             );
-            res.send(results);
+            res.status(200).send(results);
         } else if (transaction) {
             // Handle a single transaction
             const result = await DB.addTransaction({ ...transaction, family: familyId });
-            res.send(result);
+            res.status(200).send(result);
         } else {
             res.status(400).send({ msg: 'Invalid data format. Expected a transaction or an array of transactions.' });
         }
@@ -113,13 +115,6 @@ apiRouter.get('/goalData', verifyAuth, async (req, res) => {
     console.log('completed getGoals call to DB', goalData);
     console.log('goalData retrieved:', goalData);
     res.send(goalData);
-});
-
-// PostfamilyData updates the family data
-apiRouter.post('/budgetData', verifyAuth, async (req, res) => {
-    const transactionWithId = { ...req.body.transaction, id: uuid.v4(), family: req.user.familyId };
-    const result = await DB.addTransaction(transactionWithId);
-    res.send(result);
 });
 
 apiRouter.post('/goalData', verifyAuth, async (req, res) => {
