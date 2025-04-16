@@ -90,9 +90,14 @@ apiRouter.post('/budgetData', verifyAuth, async (req, res) => {
         if (Array.isArray(transactions)) {
             // Handle bulk upload of transactions
             const results = await Promise.all(
-                transactions.map((t) =>
-                    DB.addTransaction({ ...t, family: familyId })
-                )
+                transactions.map(async (t) => {
+                    try {
+                        return await DB.addTransaction({ ...t, family: familyId });
+                    } catch (error) {
+                        console.error('Error inserting transaction:', t, error);
+                        return null; // Skip the failed transaction
+                    }
+                })
             );
             res.status(200).send(results);
         } else if (transaction) {
@@ -105,6 +110,23 @@ apiRouter.post('/budgetData', verifyAuth, async (req, res) => {
     } catch (error) {
         console.error('Error adding transactions:', error);
         res.status(500).send({ msg: 'Failed to add transactions.' });
+    }
+});
+
+apiRouter.get('/budgetData', verifyAuth, async (req, res) => {
+    const familyId = req.query.familyId;
+
+    if (!familyId) {
+        return res.status(400).send({ msg: 'Family ID is required' });
+    }
+
+    try {
+        const transactions = await DB.getTransactions(familyId);
+        console.log('Retrieved transactions:', transactions);
+        res.status(200).send(transactions);
+    } catch (error) {
+        console.error('Error retrieving transactions:', error);
+        res.status(500).send({ msg: 'Failed to retrieve transactions' });
     }
 });
 
