@@ -259,12 +259,11 @@ export function Dashboard() {
                 </div>
             </div>
             <div className="item">
-                <h2>Spending Overview</h2>
                 {spendingData ? (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                         {/* Bar Chart: Income, Expenses, Net Balance */}
                         <div style={{ width: '100%', maxWidth: '600px', margin: '0 auto' }}>
-                            <h3>Income vs Expenses</h3>
+                            <h2>Income vs Expenses</h2>
                             <Bar
                                 data={{
                                     labels: ['Total Income', 'Total Expenses', 'Net Balance'],
@@ -315,7 +314,7 @@ export function Dashboard() {
 
                         {/* Pie Chart: Category Breakdown */}
                         <div style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }}>
-                            <h3>Spending by Category</h3>
+                            <h2>Spending by Category</h2>
                             <Pie
                                 data={{
                                     labels: Object.keys(spendingData.categoryBreakdown),
@@ -362,7 +361,7 @@ export function Dashboard() {
                         </div>
                         {/* Pie Chart: Category Breakdown */}
                         <div style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }}>
-                            <h3>Income by Category</h3>
+                            <h2>Income by Category</h2>
                             <Pie
                                 data={{
                                     labels: Object.keys(spendingData.incomeBreakdown),
@@ -413,9 +412,8 @@ export function Dashboard() {
                 )}
             </div>
             <div className="item">
-                <h2>Your Goals</h2>
                 {goals.length > 0 ? (
-                    <ul>
+                    <ul style={{ listStyleType: 'none', padding: 0 }}>
                         {goals.map((g) => {
                             const progress = Math.min(
                                 (transactions
@@ -425,8 +423,8 @@ export function Dashboard() {
                             );
 
                             return (
-                                <li key={g._id}>
-                                    <p>Category: {g.category} {g.type}</p>
+                                <li key={g._id} style={{ marginBottom: '20px' }}>
+                                    <h2>{g.category} {g.type} Goal</h2>
                                     <p>Goal Amount: ${g.amount}</p>
                                     <p>Set Date: {new Date(g.setDate).toLocaleDateString()}</p>
                                     <p>Goal Date: {new Date(g.goalDate).toLocaleDateString()}</p>
@@ -438,8 +436,8 @@ export function Dashboard() {
                                                     {
                                                         label: 'Progress (%)',
                                                         data: [progress],
-                                                        backgroundColor: 'rgb(6, 194, 0)',
-                                                        borderColor: 'rgba(75, 192, 192, 1)',
+                                                        backgroundColor: 'rgb(3, 167, 66)',
+                                                        borderColor: 'rgb(19, 196, 28)',
                                                         borderWidth: 1,
                                                     },
                                                 ],
@@ -533,7 +531,7 @@ export function Dashboard() {
             <div className="item">
                 <h2>Set a New Goal!</h2>
                 <form onSubmit={handleGoal}>
-                <select name="type"
+                    <select name="type"
                         value={type}
                         onChange={(e) => setType(e.target.value)}>
                         <option value="" disabled>
@@ -586,7 +584,7 @@ export function Dashboard() {
                     <button type="submit" className="button">Submit Goal</button>
                 </form>
             </div>
-            
+
 
             <div className="item">
                 <button onClick={() => navigate('/transactions')}
