@@ -2,19 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export function Transactions() {
-
     const navigate = useNavigate();
     const [transactions, setTransactions] = useState([]);
     const [familyId, setFamilyId] = useState(localStorage.getItem('familyId'));
     const [editingTransactionId, setEditingTransactionId] = useState(null);
     const [newCategory, setNewCategory] = useState('');
+    const [filterCategory, setFilterCategory] = useState('');
+    const [filterDate, setFilterDate] = useState('');
+    const [filterType, setFilterType] = useState('');
 
-    React.useEffect(() => {
+    useEffect(() => {
         fetch(`/api/budgetData?familyId=${encodeURIComponent(familyId)}`, {
             method: 'GET',
             credentials: 'include',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
             },
         })
             .then((response) => {
@@ -24,7 +26,7 @@ export function Transactions() {
             .then((data) => {
                 setTransactions(Array.isArray(data) ? data : []);
             })
-            .catch((error) => console.error("Error fetching transactions:", error));
+            .catch((error) => console.error('Error fetching transactions:', error));
     }, [familyId]);
 
     const updateCategory = async (transactionId, updatedCategory) => {
@@ -60,14 +62,30 @@ export function Transactions() {
         }
     };
 
+    const getFilteredTransactions = () => {
+        return transactions.filter((transaction) => {
+            const matchesCategory =
+                !filterCategory || transaction.category === filterCategory;
+            const matchesDate =
+                !filterDate || new Date(transaction.date).toISOString().split('T')[0] === filterDate;
+            const matchesType =
+                !filterType || transaction.type === filterType;
+
+            return matchesCategory && matchesDate && matchesType;
+        });
+    };
+
     const getTransactionRow = () => {
-        if (!Array.isArray(transactions)) {
-            console.error("transactions is not an array:", transactions);
+        const filteredTransactions = getFilteredTransactions();
+
+        if (!Array.isArray(filteredTransactions)) {
+            console.error('transactions is not an array:', filteredTransactions);
             return null; // Or a fallback UI
         }
 
-        // Sort transactions by date in descending order
-        const sortedTransactions = [...transactions].sort((a, b) => new Date(b.date) - new Date(a.date));
+        const sortedTransactions = [...filteredTransactions].sort(
+            (a, b) => new Date(b.date) - new Date(a.date)
+        );
 
         return sortedTransactions.map((transaction) => (
             <div className="transaction-row" key={transaction._id}>
@@ -84,7 +102,7 @@ export function Transactions() {
                         <select
                             value={newCategory}
                             onChange={(e) => setNewCategory(e.target.value)}
-                            onBlur={() => updateCategory(transaction._id, newCategory)} // Pass the correct _id
+                            onBlur={() => updateCategory(transaction._id, newCategory)}
                         >
                             <option>Piano Lessons</option>
                             <option>Stipend</option>
@@ -124,9 +142,52 @@ export function Transactions() {
     };
 
     return (
-        <main className='container-fluid text-center'>
+        <main className="container-fluid text-center">
             <div className="item">
-                <button className="button2" onClick={() => navigate('/dashboard')}>Back to Dashboard</button>
+                <button className="button2" onClick={() => navigate('/dashboard')}>
+                    Back to Dashboard
+                </button>
+            </div>
+            <div className="filters">
+                <select
+                    value={filterCategory}
+                    onChange={(e) => setFilterCategory(e.target.value)}
+                >
+                    <option value="">All Categories</option>
+                    <option>Piano Lessons</option>
+                    <option>Stipend</option>
+                    <option>Reimbursement</option>
+                    <option>Tithing</option>
+                    <option>Car Repair</option>
+                    <option>School</option>
+                    <option>Groceries</option>
+                    <option>Junk food</option>
+                    <option>Gifts</option>
+                    <option>Gas</option>
+                    <option>Wholesome Recreational Activities</option>
+                    <option>Home</option>
+                    <option>Clothes</option>
+                    <option>Classifieds</option>
+                    <option>Gun Stuff</option>
+                    <option>Rent</option>
+                    <option>Utilities</option>
+                    <option>Savings</option>
+                </select>
+
+                <input
+                    type="date"
+                    value={filterDate}
+                    onChange={(e) => setFilterDate(e.target.value)}
+                />
+
+                <select
+                    value={filterType}
+                    onChange={(e) => setFilterType(e.target.value)}
+                >
+                    <option value="">All Types</option>
+                    <option value="Income">Income</option>
+                    <option value="Expense">Expense</option>
+                </select>
             </div>
             <div className="transaction-list">
                 <h2>Transaction History</h2>
@@ -134,8 +195,8 @@ export function Transactions() {
                     <div className="history">
                         <div className="transaction-header">
                             <span>Date</span>
-                            <span>Amount </span>
-                            <span>Category of Expense </span>
+                            <span>Amount</span>
+                            <span>Category of Expense</span>
                             <span>Notes</span>
                             <span>Family Member</span>
                         </div>
