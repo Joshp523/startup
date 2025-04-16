@@ -172,34 +172,62 @@ img {
     margin: 5px 0;
 }
 
-.button,
-.button2 {
-    background-color: #4f6450;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-size: 18px;
-    font-family: 'Libre Baskerville', serif;
+.transaction-row select {
+    font-size: 16px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #fff;
     cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    align-content: center;
 }
 
+.button,
 .button2 {
-    padding: 20px 40px;
-    width: 200px;
-    height: 200px;
+    background-color: #4f6450; /* Dark green background */
+    color: white; /* White text */
+    border: none; /* Remove border */
+    border-radius: 10px; /* Rounded corners */
+    font-size: 18px; /* Larger font size */
+    font-family: 'Libre Baskerville', serif; /* Consistent font */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: all 0.3s ease; /* Smooth hover effect */
+    display: flex; /* Center content */
+    justify-content: center;
+    align-items: center;
+    padding: 15px 30px; /* Add padding for larger buttons */
+    margin: 10px auto; /* Center the button horizontally */
+    width: auto; /* Allow the button to size dynamically */
+    text-align: center; /* Center text */
 }
 
 .button:hover,
 .button2:hover {
-    background-color: #2dd635;
-    transform: scale(1.05);
+    background-color: #2dd635; /* Brighter green on hover */
+    transform: scale(1.05); /* Slightly enlarge on hover */
 }
 
+.upload-button {
+    background-color: #4f6450; /* Dark green background */
+    color: white; /* White text */
+    border: none; /* Remove border */
+    border-radius: 10px; /* Rounded corners */
+    font-size: 18px; /* Larger font size */
+    font-family: 'Libre Baskerville', serif; /* Consistent font */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: all 0.3s ease; /* Smooth hover effect */
+    display: flex; /* Center content */
+    justify-content: center;
+    align-items: center;
+    padding: 15px 30px; /* Add padding for larger buttons */
+    margin: 10px auto; /* Center the button horizontally */
+    width: auto; /* Allow the button to size dynamically */
+    text-align: center; /* Center text */
+}
+
+.upload-button:hover {
+    background-color: #2dd635; /* Brighter green on hover */
+    transform: scale(1.05); /* Slightly enlarge on hover */
+}
 
 #transactionForm {
     background-color: #ffffff;

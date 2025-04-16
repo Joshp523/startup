@@ -1,4 +1,4 @@
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 const config = require('./dbConfig.json');
 
 const url = `mongodb+srv://${config.userName}:${config.password}@${config.hostname}`;
@@ -64,6 +64,20 @@ async function getGoals(family) {
   return goalCollection.find({family: family}).toArray();
 }
 
+async function updateTransactionCategory(transactionId, category) {
+  console.log('Updating transaction category:', transactionId, category);
+  try {
+      const result = await transactionCollection.updateOne(
+          { _id: new ObjectId(transactionId) }, // Use ObjectId here
+          { $set: { category } }
+      );
+      return result;
+  } catch (error) {
+      console.error('Error updating transaction category:', error);
+      throw error;
+  }
+}
+
 module.exports = {
   getUser,
   getUserByToken,
@@ -71,6 +85,7 @@ module.exports = {
   updateUser,
   addTransaction,
   getTransactions,
+  updateTransactionCategory,
   addGoal,
   getGoals,
 };

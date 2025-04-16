@@ -398,7 +398,7 @@ export function Dashboard() {
                                             label: 'Spending by Category',
                                             data: Object.values(spendingData.categoryBreakdown),
                                             backgroundColor: Object.keys(spendingData.categoryBreakdown).map(() => getRandomColor()),
-                                            borderColor: Object.keys(spendingData.categoryBreakdown).map(() => getRandomColor()),
+                                            //borderColor: Object.keys(spendingData.categoryBreakdown).map(() => getRandomColor()),
                                             borderWidth: 1,
                                         },
                                     ],
@@ -423,7 +423,7 @@ export function Dashboard() {
                                             label: 'Income by Category',
                                             data: Object.values(spendingData.incomeBreakdown),
                                             backgroundColor: Object.keys(spendingData.incomeBreakdown).map(() => getRandomColor()),
-                                            borderColor: Object.keys(spendingData.incomeBreakdown).map(() => getRandomColor()),
+                                            //borderColor: Object.keys(spendingData.incomeBreakdown).map(() => getRandomColor()),
                                             borderWidth: 1,
                                         },
                                     ],
@@ -507,14 +507,11 @@ export function Dashboard() {
                         value={type}
                         onChange={(e) => setType(e.target.value)}>
                         <option value="" disabled>
-                            Select an option
+                            Expense/Income
                         </option>
                         <option>Expense</option>
                         <option>Income</option>
                     </select>
-
-                    
-
                     <div>
                         <select
                             name="category"
@@ -530,7 +527,7 @@ export function Dashboard() {
                             }}
                             required
                         >
-                            <option value="" disabled>Select a category</option>
+                            <option value="" disabled>Category</option>
                             <option>Piano Lessons</option>
                             <option>Stipend</option>
                             <option>Reimbursement</option>
@@ -662,7 +659,7 @@ export function Dashboard() {
                         onChange={(e) => setUploadedFile(e.target.files[0])}
                         required
                     />
-                    <button type="submit" className="button">Upload</button>
+                    <button type="submit" className="upload-button">Upload</button>
                 </form>
             </div>
         </main>

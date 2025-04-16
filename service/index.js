@@ -122,11 +122,31 @@ apiRouter.get('/budgetData', verifyAuth, async (req, res) => {
 
     try {
         const transactions = await DB.getTransactions(familyId);
-        console.log('Retrieved transactions:', transactions);
-        res.status(200).send(transactions);
+        res.status(200).send(transactions); // Ensure _id is included in the response
     } catch (error) {
         console.error('Error retrieving transactions:', error);
         res.status(500).send({ msg: 'Failed to retrieve transactions' });
+    }
+});
+
+apiRouter.put('/budgetData', verifyAuth, async (req, res) => {
+    const { transactionId, category } = req.body;
+
+    console.log('budgetData PUT endpoint reached', transactionId, category); // Debug log
+
+    if (!transactionId || !category) {
+        return res.status(400).send({ msg: 'Transaction ID and category are required' });
+    }
+
+    try {
+        const result = await DB.updateTransactionCategory(transactionId, category);
+        if (result.modifiedCount === 0) {
+            return res.status(404).send({ msg: 'Transaction not found' });
+        }
+        res.status(200).send({ msg: 'Category updated successfully' });
+    } catch (error) {
+        console.error('Error updating transaction category:', error);
+        res.status(500).send({ msg: 'Failed to update category' });
     }
 });
 
@@ -142,11 +162,11 @@ apiRouter.get('/goalData', verifyAuth, async (req, res) => {
 apiRouter.post('/goalData', verifyAuth, async (req, res) => {
     const goal = {
         ...req.body.goal,
-        family: req.user.familyId, 
-        setDate: req.body.goal.setDate || new Date().toISOString(), 
-        goalDate: req.body.goal.goalDate, 
-        category: req.body.goal.category, 
-        amount: req.body.goal.amount, 
+        family: req.user.familyId,
+        setDate: req.body.goal.setDate || new Date().toISOString(),
+        goalDate: req.body.goal.goalDate,
+        category: req.body.goal.category,
+        amount: req.body.goal.amount,
         type: req.body.goal.type,
     };
 
@@ -156,9 +176,9 @@ apiRouter.post('/goalData', verifyAuth, async (req, res) => {
 
     try {
         const result = await DB.addGoal(goal);
-        res.send(result); 
+        res.send(result);
 
-        console.log('Goal added successfully:', result); 
+        console.log('Goal added successfully:', result);
     } catch (error) {
         console.error('Error adding goal:', error);
         res.status(500).send({ msg: 'Failed to add goal', error: error.message });
