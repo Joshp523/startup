@@ -24,6 +24,7 @@ export function Dashboard() {
     const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
     const [goalDate, setGoalDate] = useState('');
     const [uploadedFile, setUploadedFile] = useState(null);
+    const [customCategory, setCustomCategory] = useState(''); 
 
     const notifier = new Notifier();
 
@@ -42,7 +43,7 @@ export function Dashboard() {
                 const transactions = results.data.map((row) => {
                     const amount = Math.abs(parseFloat(row.Amount)); // Remove the sign from the amount
                     const type = parseFloat(row.Amount) < 0 ? 'Expense' : 'Income'; // Determine type based on the sign
-        
+
                     return {
                         amount, // Unsigned amount
                         type, // 'Expense' or 'Income'
@@ -52,7 +53,7 @@ export function Dashboard() {
                         date: new Date(row.Date).toISOString(), // Convert the date to ISO format
                     };
                 });
-        
+
                 try {
                     // Send transactions to the backend
                     await fetch('/api/budgetData', {
@@ -61,7 +62,7 @@ export function Dashboard() {
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ familyId, transactions }),
                     });
-        
+
                     setTransactionUpdate((prev) => prev + 1);
                     alert('Transactions uploaded successfully!');
                 } catch (error) {
@@ -75,6 +76,15 @@ export function Dashboard() {
             },
         });
     };
+
+    function getRandomColor(category) {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
 
     async function getTransactions() {
         const budgetResponse = await fetch(`/api/budgetData?familyId=${encodeURIComponent(familyId)}`, {
@@ -150,7 +160,7 @@ export function Dashboard() {
         const newTransaction = {
             amount: Number(amount),
             type,
-            category,
+            category: customCategory || category, // Use custom category if provided
             notes,
             member: localStorage.getItem('name'),
             date: new Date().toISOString(),
@@ -160,6 +170,7 @@ export function Dashboard() {
         setType('Expense');
         setCategory('');
         setNotes('');
+        setCustomCategory('');
         setTransactionUpdate((prev) => prev + 1);
         //navigate('/transactions');
     }
@@ -373,30 +384,8 @@ export function Dashboard() {
                                         {
                                             label: 'Spending by Category',
                                             data: Object.values(spendingData.categoryBreakdown),
-                                            backgroundColor: [
-                                                'rgba(255, 99, 132, 0.6)',
-                                                'rgba(54, 162, 235, 0.6)',
-                                                'rgba(255, 206, 86, 0.6)',
-                                                'rgba(75, 192, 192, 0.6)',
-                                                'rgba(153, 102, 255, 0.6)',
-                                                'rgba(255, 159, 64, 0.6)',
-                                                'rgba(199, 199, 199, 0.6)',
-                                                'rgba(83, 102, 255, 0.6)',
-                                                'rgba(255, 99, 255, 0.6)',
-                                                'rgba(99, 255, 132, 0.6)',
-                                            ],
-                                            borderColor: [
-                                                'rgba(255, 99, 132, 1)',
-                                                'rgba(54, 162, 235, 1)',
-                                                'rgba(255, 206, 86, 1)',
-                                                'rgba(75, 192, 192, 1)',
-                                                'rgba(153, 102, 255, 1)',
-                                                'rgba(255, 159, 64, 1)',
-                                                'rgba(199, 199, 199, 1)',
-                                                'rgba(83, 102, 255, 1)',
-                                                'rgba(255, 99, 255, 1)',
-                                                'rgba(99, 255, 132, 1)',
-                                            ],
+                                            backgroundColor: Object.keys(spendingData.categoryBreakdown).map(() => getRandomColor()),
+                                            borderColor: Object.keys(spendingData.categoryBreakdown).map(() => getRandomColor()),
                                             borderWidth: 1,
                                         },
                                     ],
@@ -420,30 +409,8 @@ export function Dashboard() {
                                         {
                                             label: 'Income by Category',
                                             data: Object.values(spendingData.incomeBreakdown),
-                                            backgroundColor: [
-                                                'rgba(255, 99, 132, 0.6)',
-                                                'rgba(54, 162, 235, 0.6)',
-                                                'rgba(255, 206, 86, 0.6)',
-                                                'rgba(75, 192, 192, 0.6)',
-                                                'rgba(153, 102, 255, 0.6)',
-                                                'rgba(255, 159, 64, 0.6)',
-                                                'rgba(199, 199, 199, 0.6)',
-                                                'rgba(83, 102, 255, 0.6)',
-                                                'rgba(255, 99, 255, 0.6)',
-                                                'rgba(99, 255, 132, 0.6)',
-                                            ],
-                                            borderColor: [
-                                                'rgba(255, 99, 132, 1)',
-                                                'rgba(54, 162, 235, 1)',
-                                                'rgba(255, 206, 86, 1)',
-                                                'rgba(75, 192, 192, 1)',
-                                                'rgba(153, 102, 255, 1)',
-                                                'rgba(255, 159, 64, 1)',
-                                                'rgba(199, 199, 199, 1)',
-                                                'rgba(83, 102, 255, 1)',
-                                                'rgba(255, 99, 255, 1)',
-                                                'rgba(99, 255, 132, 1)',
-                                            ],
+                                            backgroundColor: Object.keys(spendingData.incomeBreakdown).map(() => getRandomColor()),
+                                            borderColor: Object.keys(spendingData.incomeBreakdown).map(() => getRandomColor()),
                                             borderWidth: 1,
                                         },
                                     ],
@@ -487,8 +454,7 @@ export function Dashboard() {
                                                     {
                                                         label: 'Progress (%)',
                                                         data: [progress],
-                                                        backgroundColor: 'rgb(3, 167, 66)',
-                                                        borderColor: 'rgb(19, 196, 28)',
+                                                        backgroundColor: Object.keys(spendingData.incomeBreakdown).map(() => getRandomColor()),
                                                         borderWidth: 1,
                                                     },
                                                 ],
@@ -533,32 +499,57 @@ export function Dashboard() {
                         <option>Expense</option>
                         <option>Income</option>
                     </select>
-                    <select name="category"
-                        value={category}
-                        onChange={(e) => setCategory(e.target.value)}>
-                        <option value="" disabled>
-                            Select a category
-                        </option>
-                        <option>Piano Lessons</option>
-                        <option>Stipend</option>
-                        <option>Reimbursement</option>
-                        <option>Tithing</option>
-                        <option>Car Repair</option>
-                        <option>School</option>
-                        <option>Groceries</option>
-                        <option>Junk food</option>
-                        <option>Gifts</option>
-                        <option>Gas</option>
-                        <option>Wholesome Recreational Activities</option>
-                        <option>Home</option>
-                        <option>Clothes</option>
-                        <option>Classifieds</option>
-                        <option>Gun Stuff</option>
-                        <option>Rent</option>
-                        <option>Utilities</option>
-                        <option>Savings</option>
 
-                    </select>
+                    
+
+                    <div>
+                        <select
+                            name="category"
+                            value={category}
+                            onChange={(e) => {
+                                const selectedCategory = e.target.value;
+                                setCategory(selectedCategory);
+
+                                // Clear custom category input if switching back to predefined categories
+                                if (selectedCategory !== 'custom') {
+                                    setCustomCategory('');
+                                }
+                            }}
+                            required
+                        >
+                            <option value="" disabled>Select a category</option>
+                            <option>Piano Lessons</option>
+                            <option>Stipend</option>
+                            <option>Reimbursement</option>
+                            <option>Tithing</option>
+                            <option>Car Repair</option>
+                            <option>School</option>
+                            <option>Groceries</option>
+                            <option>Junk food</option>
+                            <option>Gifts</option>
+                            <option>Gas</option>
+                            <option>Wholesome Recreational Activities</option>
+                            <option>Home</option>
+                            <option>Clothes</option>
+                            <option>Classifieds</option>
+                            <option>Gun Stuff</option>
+                            <option>Rent</option>
+                            <option>Utilities</option>
+                            <option>Savings</option>
+                            <option value="custom">Custom Category</option> {/* Custom category option */}
+                        </select>
+
+                        {/* Show a text input field if "Custom Category" is selected */}
+                        {category === "custom" && (
+                            <input
+                                type="text"
+                                placeholder="Enter custom category"
+                                value={customCategory}
+                                onChange={(e) => setCustomCategory(e.target.value)} // Update custom category state
+                                required
+                            />
+                        )}
+                    </div>
                     <input type="number"
                         name="amount"
                         placeholder="$ amount"

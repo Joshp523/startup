@@ -30,8 +30,12 @@ export function Transactions() {
         if (!Array.isArray(transactions)) {
             console.error("transactions is not an array:", transactions);
             return null; // Or a fallback UI
-          }
-        return transactions.map((transaction) => (
+        }
+
+        // Sort transactions by date in descending order
+        const sortedTransactions = [...transactions].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        return sortedTransactions.map((transaction, index) => (
             <div className="transaction-row" key={transaction.id || index}>
                 <span className="date">{new Date(transaction.date).toLocaleDateString()}</span>
                 <span
