@@ -35,20 +35,24 @@ export function Dashboard() {
             return;
         }
 
-        // Parse the CSV file
         Papa.parse(uploadedFile, {
             header: true,
             skipEmptyLines: true,
             complete: async (results) => {
-                const transactions = results.data.map((row) => ({
-                    amount: parseFloat(row.amount),
-                    type: row.type,
-                    category: row.category,
-                    notes: row.notes || '',
-                    member: localStorage.getItem('name'),
-                    date: new Date(row.date).toISOString(),
-                }));
-
+                const transactions = results.data.map((row) => {
+                    const amount = Math.abs(parseFloat(row.Amount)); // Remove the sign from the amount
+                    const type = parseFloat(row.Amount) < 0 ? 'Expense' : 'Income'; // Determine type based on the sign
+        
+                    return {
+                        amount, // Unsigned amount
+                        type, // 'Expense' or 'Income'
+                        category: row.Category || 'Uncategorized', // Default to 'Uncategorized' if empty
+                        notes: row.Description || '', // Use the 'Description' column for notes
+                        member: localStorage.getItem('name'), // Add the member name from localStorage
+                        date: new Date(row.Date).toISOString(), // Convert the date to ISO format
+                    };
+                });
+        
                 try {
                     // Send transactions to the backend
                     await fetch('/api/budgetData', {
@@ -57,7 +61,7 @@ export function Dashboard() {
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ familyId, transactions }),
                     });
-
+        
                     setTransactionUpdate((prev) => prev + 1);
                     alert('Transactions uploaded successfully!');
                 } catch (error) {
