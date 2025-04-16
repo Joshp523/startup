@@ -21,6 +21,7 @@ export function Dashboard() {
     const [transactions, setTransactions] = React.useState([]);
     const [familyId, setFamilyId] = useState(localStorage.getItem('familyId'));
     const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
+    const [goalDate, setGoalDate] = useState('');
 
     const notifier = new Notifier();
 
@@ -79,13 +80,17 @@ export function Dashboard() {
     const handleGoal = (e) => {
         e.preventDefault();
         const newGoal = {
-            goal: goal,
-            date: new Date().toISOString(),
+            category,
+            amount: Number(amount),
+            setDate: new Date().toISOString(),
+            goalDate: new Date(goalDate).toISOString(),
         };
         addGoal(familyId, newGoal);
-        setGoal('');
+        setCategory('');
+        setAmount('');
+        setGoalDate('');
         setTransactionUpdate((prev) => prev + 1);
-    }
+    };
 
     const handleTransaction = (e) => {
         e.preventDefault();
@@ -202,7 +207,7 @@ export function Dashboard() {
                 body: JSON.stringify({
                     model: "gpt-3.5-turbo",
                     messages: [{ role: "system", content: "You are a financial assistant providing budget insights for a young family trying to build their savings and spend responsibly. children are very important to them. answer each prompt as simply as you can." },
-                    { role: "user", content: `Comment on how this week or month's spending compares to previous spending patterns. higher or lower? Tell us concisely our percent progress toward each specific goal (i.e. you are 40% of the way to meeting your goal of saving a million dollars! keep it up! or "you have already spent x dollars on fast food. keep it under $x more in the next x days to meet your goal!"). :\n${spendingSummary}\n${goalSummary}` }]
+                    { role: "user", content: `Comment on how this week or month's spending compares to previous spending patterns. :\n${spendingSummary}\n` }]
                 })
             });
 
@@ -465,28 +470,92 @@ export function Dashboard() {
             <div className="item">
                 <h2>Set a New Goal!</h2>
                 <form onSubmit={handleGoal}>
-
-                    <input type="text"
-                        name="goal"
-                        placeholder="Enter a goal"
-                        value={goal}
-                        onChange={(e) => setGoal(e.target.value)}
+                    <select
+                        name="category"
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
+                        required
+                    >
+                        <option value="" disabled>Select a category</option>
+                        <option>Groceries</option>
+                        <option>Rent</option>
+                        <option>Savings</option>
+                        <option>Utilities</option>
+                        {/* Add more categories as needed */}
+                    </select>
+                    <input
+                        type="number"
+                        name="amount"
+                        placeholder="Goal Amount ($)"
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
+                        required
                     />
-                    <button type="submit"
-                        className="button">
-                        Submit Goal
-                    </button>
+                    <input
+                        type="date"
+                        name="goalDate"
+                        value={goalDate}
+                        onChange={(e) => setGoalDate(e.target.value)}
+                        required
+                    />
+                    <button type="submit" className="button">Submit Goal</button>
                 </form>
             </div>
             <div className="item">
                 <h2>Your Goals</h2>
                 {goals.length > 0 ? (
                     <ul>
-                        {goals.map((g) => (
-                            <li key={g._id}>
-                                Goal:  {g.goal}   (Set on {new Date(g.date).toLocaleDateString()})
-                            </li>
-                        ))}
+                        {goals.map((g) => {
+                            const progress = Math.min(
+                                (transactions
+                                    .filter((t) => t.category === g.category && t.type === 'Expense')
+                                    .reduce((sum, t) => sum + t.amount, 0) / g.amount) * 100,
+                                100
+                            );
+
+                            return (
+                                <li key={g._id}>
+                                    <p>Category: {g.category}</p>
+                                    <p>Goal Amount: ${g.amount}</p>
+                                    <p>Set Date: {new Date(g.setDate).toLocaleDateString()}</p>
+                                    <p>Goal Date: {new Date(g.goalDate).toLocaleDateString()}</p>
+                                    <div style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }}>
+                                        <Bar
+                                            data={{
+                                                labels: ['Progress'],
+                                                datasets: [
+                                                    {
+                                                        label: 'Progress (%)',
+                                                        data: [progress],
+                                                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                                                        borderColor: 'rgba(75, 192, 192, 1)',
+                                                        borderWidth: 1,
+                                                    },
+                                                ],
+                                            }}
+                                            options={{
+                                                indexAxis: 'y',
+                                                scales: {
+                                                    x: {
+                                                        beginAtZero: true,
+                                                        max: 100,
+                                                        title: {
+                                                            display: true,
+                                                            text: 'Progress (%)',
+                                                        },
+                                                    },
+                                                },
+                                                plugins: {
+                                                    legend: {
+                                                        display: false,
+                                                    },
+                                                },
+                                            }}
+                                        />
+                                    </div>
+                                </li>
+                            );
+                        })}
                     </ul>
                 ) : (
                     <p>No goals set yet.</p>
