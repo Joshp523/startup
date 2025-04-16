@@ -93,6 +93,7 @@ apiRouter.get('/goalData', verifyAuth, async (req, res) => {
     const family = req.user.familyId || req.user.family;
     const goalData = await DB.getGoals(family);
     console.log('completed getGoals call to DB', goalData);
+    console.log('goalData retrieved:', goalData);
     res.send(goalData);
 });
 
@@ -111,6 +112,7 @@ apiRouter.post('/goalData', verifyAuth, async (req, res) => {
         goalDate: req.body.goal.goalDate, 
         category: req.body.goal.category, 
         amount: req.body.goal.amount, 
+        type: req.body.goal.type,
     };
 
     if (!goal.goalDate || !goal.category || !goal.amount) {

@@ -80,6 +80,7 @@ export function Dashboard() {
     const handleGoal = (e) => {
         e.preventDefault();
         const newGoal = {
+            type,
             category,
             amount: Number(amount),
             setDate: new Date().toISOString(),
@@ -88,6 +89,7 @@ export function Dashboard() {
         addGoal(familyId, newGoal);
         setCategory('');
         setAmount('');
+        setType('')
         setGoalDate('');
         setTransactionUpdate((prev) => prev + 1);
     };
@@ -411,111 +413,20 @@ export function Dashboard() {
                 )}
             </div>
             <div className="item">
-                <h2>Log a New Transaction</h2>
-                <form onSubmit={handleTransaction}>
-                    <select name="type"
-                        value={type}
-                        onChange={(e) => setType(e.target.value)}>
-                        <option value="" disabled>
-                            Select an option
-                        </option>
-                        <option>Expense</option>
-                        <option>Income</option>
-                    </select>
-                    <select name="category"
-                        value={category}
-                        onChange={(e) => setCategory(e.target.value)}>
-                        <option value="" disabled>
-                            Select an option
-                        </option>
-                        <option>Piano Lessons</option>
-                        <option>Stipend</option>
-                        <option>Reimbursement</option>
-                        <option>Tithing</option>
-                        <option>Car Repair</option>
-                        <option>School</option>
-                        <option>Groceries</option>
-                        <option>Junk food</option>
-                        <option>Gifts</option>
-                        <option>Gas</option>
-                        <option>Wholesome Recreational Activities</option>
-                        <option>Home</option>
-                        <option>Clothes</option>
-                        <option>Classifieds</option>
-                        <option>Gun Stuff</option>
-                        <option>Rent</option>
-                        <option>Utilities</option>
-                        <option>savings</option>
-                    </select>
-                    <input type="number"
-                        name="amount"
-                        placeholder="$ amount"
-                        required
-                        value={amount}
-                        onChange={(e) => setAmount(e.target.value)}
-                    />
-                    <input type="text"
-                        name="comments"
-                        placeholder="Comments"
-                        value={notes}
-                        onChange={(e) => setNotes(e.target.value)}
-                    />
-                    <button type="submit"
-                        className="button">
-                        Submit
-                    </button>
-                </form>
-            </div>
-
-            <div className="item">
-                <h2>Set a New Goal!</h2>
-                <form onSubmit={handleGoal}>
-                    <select
-                        name="category"
-                        value={category}
-                        onChange={(e) => setCategory(e.target.value)}
-                        required
-                    >
-                        <option value="" disabled>Select a category</option>
-                        <option>Groceries</option>
-                        <option>Rent</option>
-                        <option>Savings</option>
-                        <option>Utilities</option>
-                        {/* Add more categories as needed */}
-                    </select>
-                    <input
-                        type="number"
-                        name="amount"
-                        placeholder="Goal Amount ($)"
-                        value={amount}
-                        onChange={(e) => setAmount(e.target.value)}
-                        required
-                    />
-                    <input
-                        type="date"
-                        name="goalDate"
-                        value={goalDate}
-                        onChange={(e) => setGoalDate(e.target.value)}
-                        required
-                    />
-                    <button type="submit" className="button">Submit Goal</button>
-                </form>
-            </div>
-            <div className="item">
                 <h2>Your Goals</h2>
                 {goals.length > 0 ? (
                     <ul>
                         {goals.map((g) => {
                             const progress = Math.min(
                                 (transactions
-                                    .filter((t) => t.category === g.category && t.type === 'Expense')
+                                    .filter((t) => t.category === g.category && t.type === g.type)
                                     .reduce((sum, t) => sum + t.amount, 0) / g.amount) * 100,
                                 100
                             );
 
                             return (
                                 <li key={g._id}>
-                                    <p>Category: {g.category}</p>
+                                    <p>Category: {g.category} {g.type}</p>
                                     <p>Goal Amount: ${g.amount}</p>
                                     <p>Set Date: {new Date(g.setDate).toLocaleDateString()}</p>
                                     <p>Goal Date: {new Date(g.goalDate).toLocaleDateString()}</p>
@@ -527,7 +438,7 @@ export function Dashboard() {
                                                     {
                                                         label: 'Progress (%)',
                                                         data: [progress],
-                                                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                                                        backgroundColor: 'rgb(6, 194, 0)',
                                                         borderColor: 'rgba(75, 192, 192, 1)',
                                                         borderWidth: 1,
                                                     },
@@ -561,6 +472,121 @@ export function Dashboard() {
                     <p>No goals set yet.</p>
                 )}
             </div>
+            <div className="item">
+                <h2>Log a New Transaction</h2>
+                <form onSubmit={handleTransaction}>
+                    <select name="type"
+                        value={type}
+                        onChange={(e) => setType(e.target.value)}>
+                        <option value="" disabled>
+                            Select an option
+                        </option>
+                        <option>Expense</option>
+                        <option>Income</option>
+                    </select>
+                    <select name="category"
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}>
+                        <option value="" disabled>
+                            Select a category
+                        </option>
+                        <option>Piano Lessons</option>
+                        <option>Stipend</option>
+                        <option>Reimbursement</option>
+                        <option>Tithing</option>
+                        <option>Car Repair</option>
+                        <option>School</option>
+                        <option>Groceries</option>
+                        <option>Junk food</option>
+                        <option>Gifts</option>
+                        <option>Gas</option>
+                        <option>Wholesome Recreational Activities</option>
+                        <option>Home</option>
+                        <option>Clothes</option>
+                        <option>Classifieds</option>
+                        <option>Gun Stuff</option>
+                        <option>Rent</option>
+                        <option>Utilities</option>
+                        <option>Savings</option>
+
+                    </select>
+                    <input type="number"
+                        name="amount"
+                        placeholder="$ amount"
+                        required
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
+                    />
+                    <input type="text"
+                        name="comments"
+                        placeholder="Comments"
+                        value={notes}
+                        onChange={(e) => setNotes(e.target.value)}
+                    />
+                    <button type="submit"
+                        className="button">
+                        Submit
+                    </button>
+                </form>
+            </div>
+
+            <div className="item">
+                <h2>Set a New Goal!</h2>
+                <form onSubmit={handleGoal}>
+                <select name="type"
+                        value={type}
+                        onChange={(e) => setType(e.target.value)}>
+                        <option value="" disabled>
+                            Select an option
+                        </option>
+                        <option>Expense</option>
+                        <option>Income</option>
+                    </select>
+                    <select
+                        name="category"
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
+                        required
+                    >
+                        <option value="" disabled>Select a category</option>
+                        <option>Piano Lessons</option>
+                        <option>Stipend</option>
+                        <option>Reimbursement</option>
+                        <option>Tithing</option>
+                        <option>Car Repair</option>
+                        <option>School</option>
+                        <option>Groceries</option>
+                        <option>Junk food</option>
+                        <option>Gifts</option>
+                        <option>Gas</option>
+                        <option>Wholesome Recreational Activities</option>
+                        <option>Home</option>
+                        <option>Clothes</option>
+                        <option>Classifieds</option>
+                        <option>Gun Stuff</option>
+                        <option>Rent</option>
+                        <option>Utilities</option>
+                        <option>Savings</option>
+                    </select>
+                    <input
+                        type="number"
+                        name="amount"
+                        placeholder="Goal Amount ($)"
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
+                        required
+                    />
+                    <input
+                        type="date"
+                        name="goalDate"
+                        value={goalDate}
+                        onChange={(e) => setGoalDate(e.target.value)}
+                        required
+                    />
+                    <button type="submit" className="button">Submit Goal</button>
+                </form>
+            </div>
+            
 
             <div className="item">
                 <button onClick={() => navigate('/transactions')}
