@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Bar, Pie, Line } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale, LineElement, PointElement } from 'chart.js';
 import { Notifier } from '../notifier.js';
+import Papa from 'papaparse';
 
 
 ChartJS.register(ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale, LineElement, PointElement);
@@ -22,8 +23,54 @@ export function Dashboard() {
     const [familyId, setFamilyId] = useState(localStorage.getItem('familyId'));
     const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
     const [goalDate, setGoalDate] = useState('');
+    const [uploadedFile, setUploadedFile] = useState(null);
 
     const notifier = new Notifier();
+
+    const handleFileUpload = async (e) => {
+        e.preventDefault();
+
+        if (!uploadedFile) {
+            alert('Please upload a file.');
+            return;
+        }
+
+        // Parse the CSV file
+        Papa.parse(uploadedFile, {
+            header: true,
+            skipEmptyLines: true,
+            complete: async (results) => {
+                const transactions = results.data.map((row) => ({
+                    amount: parseFloat(row.amount),
+                    type: row.type,
+                    category: row.category,
+                    notes: row.notes || '',
+                    member: localStorage.getItem('name'),
+                    date: new Date(row.date).toISOString(),
+                }));
+
+                try {
+                    // Send transactions to the backend
+                    await fetch('/api/budgetData', {
+                        method: 'POST',
+                        credentials: 'include',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ familyId, transactions }),
+                    });
+
+                    setTransactionUpdate((prev) => prev + 1);
+                    alert('Transactions uploaded successfully!');
+                } catch (error) {
+                    console.error('Error uploading transactions:', error);
+                    alert('Failed to upload transactions.');
+                }
+            },
+            error: (error) => {
+                console.error('Error parsing CSV:', error);
+                alert('Failed to parse CSV file.');
+            },
+        });
+    };
 
     async function getTransactions() {
         const budgetResponse = await fetch(`/api/budgetData?familyId=${encodeURIComponent(familyId)}`, {
@@ -597,6 +644,18 @@ export function Dashboard() {
                     className="button2">
                     Cick if you met your goal!
                 </button>
+            </div>
+            <div className="item">
+                <h2>Upload Transactions</h2>
+                <form onSubmit={handleFileUpload}>
+                    <input
+                        type="file"
+                        accept=".csv"
+                        onChange={(e) => setUploadedFile(e.target.files[0])}
+                        required
+                    />
+                    <button type="submit" className="button">Upload</button>
+                </form>
             </div>
         </main>
     );
