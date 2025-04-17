@@ -10,6 +10,7 @@ export function Transactions() {
     const [filterCategory, setFilterCategory] = useState('');
     const [filterDate, setFilterDate] = useState('');
     const [filterType, setFilterType] = useState('');
+    const [customCategory, setCustomCategory] = useState('');
 
     useEffect(() => {
         fetch(`/api/budgetData?familyId=${encodeURIComponent(familyId)}`, {
@@ -99,30 +100,56 @@ export function Transactions() {
                 </span>
                 <span className="category">
                     {editingTransactionId === transaction._id ? (
-                        <select
-                            value={newCategory}
-                            onChange={(e) => setNewCategory(e.target.value)}
-                            onBlur={() => updateCategory(transaction._id, newCategory)}
-                        >
-                            <option>Piano Lessons</option>
-                            <option>Stipend</option>
-                            <option>Reimbursement</option>
-                            <option>Tithing</option>
-                            <option>Car Repair</option>
-                            <option>School</option>
-                            <option>Groceries</option>
-                            <option>Junk food</option>
-                            <option>Gifts</option>
-                            <option>Gas</option>
-                            <option>Wholesome Recreational Activities</option>
-                            <option>Home</option>
-                            <option>Clothes</option>
-                            <option>Classifieds</option>
-                            <option>Gun Stuff</option>
-                            <option>Rent</option>
-                            <option>Utilities</option>
-                            <option>Savings</option>
-                        </select>
+                        <>
+                            <select
+                                value={newCategory}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    if (value === 'Custom') {
+                                        setCustomCategory(''); // Clear custom category input
+                                    }
+                                    setNewCategory(value);
+                                }}
+                                onBlur={() => {
+                                    const categoryToUpdate = newCategory === 'Custom' ? customCategory : newCategory;
+                                    updateCategory(transaction._id, categoryToUpdate);
+                                }}
+                            >
+                                <option>Piano Lessons</option>
+                                <option>Stipend</option>
+                                <option>Reimbursement</option>
+                                <option>Tithing</option>
+                                <option>Car Repair</option>
+                                <option>School</option>
+                                <option>Groceries</option>
+                                <option>Junk food</option>
+                                <option>Gifts</option>
+                                <option>Gas</option>
+                                <option>Wholesome Recreational Activities</option>
+                                <option>Home</option>
+                                <option>Clothes</option>
+                                <option>Facebook Marketplace</option>
+                                <option>Gun Stuff</option>
+                                <option>Rent</option>
+                                <option>Utilities</option>
+                                <option>Savings</option>
+                                <option>Travel</option>
+                                <option value="Custom">Custom</option>
+                            </select>
+                            {newCategory === 'Custom' && (
+                                <input
+                                    type="text"
+                                    value={customCategory}
+                                    onChange={(e) => setCustomCategory(e.target.value)}
+                                    placeholder="Enter custom category"
+                                    onBlur={() => {
+                                        if (customCategory.trim()) {
+                                            updateCategory(transaction._id, customCategory);
+                                        }
+                                    }}
+                                />
+                            )}
+                        </>
                     ) : (
                         <span
                             onClick={() => {
@@ -167,11 +194,12 @@ export function Transactions() {
                     <option>Wholesome Recreational Activities</option>
                     <option>Home</option>
                     <option>Clothes</option>
-                    <option>Classifieds</option>
+                    <option>Facebook Marketplace</option>
                     <option>Gun Stuff</option>
                     <option>Rent</option>
                     <option>Utilities</option>
                     <option>Savings</option>
+                    <option>Travel</option>
                 </select>
 
                 <input

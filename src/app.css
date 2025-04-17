@@ -181,6 +181,14 @@ img {
     cursor: pointer;
 }
 
+.transaction-row input {
+    margin-left: 10px;
+    padding: 5px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
 .button,
 .button2 {
     background-color: #4f6450; /* Dark green background */

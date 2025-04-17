@@ -24,7 +24,7 @@ export function Dashboard() {
     const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
     const [goalDate, setGoalDate] = useState('');
     const [uploadedFile, setUploadedFile] = useState(null);
-    const [customCategory, setCustomCategory] = useState(''); 
+    const [customCategory, setCustomCategory] = useState('');
 
     const notifier = new Notifier();
 
@@ -541,11 +541,12 @@ export function Dashboard() {
                             <option>Wholesome Recreational Activities</option>
                             <option>Home</option>
                             <option>Clothes</option>
-                            <option>Classifieds</option>
+                            <option>Facebook Marketplace</option>
                             <option>Gun Stuff</option>
                             <option>Rent</option>
                             <option>Utilities</option>
                             <option>Savings</option>
+                            <option>Travel</option>
                             <option value="custom">Custom Category</option> {/* Custom category option */}
                         </select>
 
@@ -612,11 +613,12 @@ export function Dashboard() {
                         <option>Wholesome Recreational Activities</option>
                         <option>Home</option>
                         <option>Clothes</option>
-                        <option>Classifieds</option>
+                        <option>Facebook Marketplace</option>
                         <option>Gun Stuff</option>
                         <option>Rent</option>
                         <option>Utilities</option>
                         <option>Savings</option>
+                        <option>Travel</option>
                     </select>
                     <input
                         type="number"
