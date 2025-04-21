@@ -64,6 +64,20 @@ async function getGoals(family) {
   return goalCollection.find({family: family}).toArray();
 }
 
+async function updateTransactionNotes(transactionId, notes) {
+  console.log('Updating transaction notes:', transactionId, notes);
+  try {
+      const result = await transactionCollection.updateOne(
+          { _id: new ObjectId(transactionId) }, // Use ObjectId here
+          { $set: { notes } }
+      );
+      return result;
+  } catch (error) {
+      console.error('Error updating transaction notes:', error);
+      throw error;
+  }
+}
+
 async function updateTransactionCategory(transactionId, category) {
   console.log('Updating transaction category:', transactionId, category);
   try {
@@ -78,6 +92,17 @@ async function updateTransactionCategory(transactionId, category) {
   }
 }
 
+async function deleteTransaction(transactionId) {
+  console.log('Deleting transaction:', transactionId);
+  try {
+      const result = await transactionCollection.deleteOne({ _id: new ObjectId(transactionId) });
+      return result;
+  } catch (error) {
+      console.error('Error deleting transaction:', error);
+      throw error;
+  }
+}
+
 module.exports = {
   getUser,
   getUserByToken,
@@ -86,6 +111,8 @@ module.exports = {
   addTransaction,
   getTransactions,
   updateTransactionCategory,
+  updateTransactionNotes,
+  deleteTransaction,
   addGoal,
   getGoals,
 };

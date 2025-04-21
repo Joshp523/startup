@@ -130,23 +130,51 @@ apiRouter.get('/budgetData', verifyAuth, async (req, res) => {
 });
 
 apiRouter.put('/budgetData', verifyAuth, async (req, res) => {
-    const { transactionId, category } = req.body;
+    const { transactionId, category, notes } = req.body;
 
-    console.log('budgetData PUT endpoint reached', transactionId, category); // Debug log
-
-    if (!transactionId || !category) {
-        return res.status(400).send({ msg: 'Transaction ID and category are required' });
+    if (!transactionId) {
+        return res.status(400).send({ msg: 'Transaction ID is required' });
     }
 
     try {
-        const result = await DB.updateTransactionCategory(transactionId, category);
-        if (result.modifiedCount === 0) {
+        if (category) {
+            const result = await DB.updateTransactionCategory(transactionId, category);
+            if (result.modifiedCount === 0) {
+                return res.status(404).send({ msg: 'Transaction not found' });
+            }
+        }
+
+        if (notes) {
+            const result = await DB.updateTransactionNotes(transactionId, notes);
+            if (result.modifiedCount === 0) {
+                return res.status(404).send({ msg: 'Transaction not found' });
+            }
+        }
+
+        res.status(200).send({ msg: 'Transaction updated successfully' });
+    } catch (error) {
+        console.error('Error updating transaction:', error);
+        res.status(500).send({ msg: 'Failed to update transaction' });
+    }
+});
+
+apiRouter.delete('/budgetData', verifyAuth, async (req, res) => {
+    const { transactionId } = req.body;
+
+    if (!transactionId) {
+        return res.status(400).send({ msg: 'Transaction ID is required' });
+    }
+
+    try {
+        const result = await DB.deleteTransaction(transactionId);
+        if (result.deletedCount === 0) {
             return res.status(404).send({ msg: 'Transaction not found' });
         }
-        res.status(200).send({ msg: 'Category updated successfully' });
+
+        res.status(200).send({ msg: 'Transaction deleted successfully' });
     } catch (error) {
-        console.error('Error updating transaction category:', error);
-        res.status(500).send({ msg: 'Failed to update category' });
+        console.error('Error deleting transaction:', error);
+        res.status(500).send({ msg: 'Failed to delete transaction' });
     }
 });
 

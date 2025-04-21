@@ -120,7 +120,7 @@ img {
 .transaction-header,
 .transaction-row {
     display: grid;
-    grid-template-columns: 15% 15% 30% 25% 15%;
+    grid-template-columns: 15% 15% 30% 25% 10% auto; /* Add an extra column for the delete button */
     align-items: center;
     width: 100%;
     border-bottom: 1px solid black;
@@ -187,6 +187,22 @@ img {
     font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 5px;
+}
+
+.transaction-row button {
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 3px; /* Smaller border radius */
+    padding: 3px 6px; /* Smaller padding */
+    font-size: 12px; /* Smaller font size */
+    cursor: pointer;
+    margin-left: auto; /* Push the button to the far right */
+    justify-self: end; /* Align the button to the right in the grid */
+}
+
+.transaction-row button:hover {
+    background-color: darkred;
 }
 
 .button,

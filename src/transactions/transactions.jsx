@@ -11,6 +11,9 @@ export function Transactions() {
     const [filterDate, setFilterDate] = useState('');
     const [filterType, setFilterType] = useState('');
     const [customCategory, setCustomCategory] = useState('');
+    const [editingNoteId, setEditingNoteId] = useState(null);
+    const [newNote, setNewNote] = useState('');
+    const [contextMenu, setContextMenu] = useState({ visible: false, x: 0, y: 0, transactionId: null });
 
     useEffect(() => {
         fetch(`/api/budgetData?familyId=${encodeURIComponent(familyId)}`, {
@@ -63,10 +66,62 @@ export function Transactions() {
         }
     };
 
+    const updateNote = async (transactionId, updatedNote) => {
+        try {
+            const response = await fetch(`/api/budgetData`, {
+                method: 'PUT',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ transactionId, notes: updatedNote }),
+            });
+    
+            if (!response.ok) {
+                throw new Error(`Failed to update note. Status: ${response.status}`);
+            }
+    
+            setTransactions((prevTransactions) =>
+                prevTransactions.map((transaction) =>
+                    transaction._id === transactionId
+                        ? { ...transaction, notes: updatedNote }
+                        : transaction
+                )
+            );
+        } catch (error) {
+            console.error('Error updating note:', error);
+            alert('Failed to update note. Please try again.');
+        }
+    };
+
+    const deleteTransaction = async (transactionId) => {
+        try {
+            const response = await fetch(`/api/budgetData`, {
+                method: 'DELETE',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ transactionId }),
+            });
+    
+            if (!response.ok) {
+                throw new Error(`Failed to delete transaction. Status: ${response.status}`);
+            }
+    
+            setTransactions((prevTransactions) =>
+                prevTransactions.filter((transaction) => transaction._id !== transactionId)
+            );
+        } catch (error) {
+            console.error('Error deleting transaction:', error);
+            alert('Failed to delete transaction. Please try again.');
+        }
+    };
+
     const getFilteredTransactions = () => {
         return transactions.filter((transaction) => {
             const matchesCategory =
-                !filterCategory || transaction.category === filterCategory;
+                !filterCategory || transaction.category.toLowerCase().includes(filterCategory.toLowerCase());
             const matchesDate =
                 !filterDate || new Date(transaction.date).toISOString().split('T')[0] === filterDate;
             const matchesType =
@@ -112,7 +167,9 @@ export function Transactions() {
                                 }}
                                 onBlur={() => {
                                     const categoryToUpdate = newCategory === 'Custom' ? customCategory : newCategory;
-                                    updateCategory(transaction._id, categoryToUpdate);
+                                    if (categoryToUpdate.trim()) {
+                                        updateCategory(transaction._id, categoryToUpdate);
+                                    }
                                 }}
                             >
                                 <option>Piano Lessons</option>
@@ -162,8 +219,36 @@ export function Transactions() {
                         </span>
                     )}
                 </span>
-                <span className="notes">{transaction.notes}</span>
+                <span className="notes">
+                    {editingNoteId === transaction._id ? (
+                        <input
+                            type="text"
+                            value={newNote}
+                            onChange={(e) => setNewNote(e.target.value)}
+                            onBlur={() => {
+                                updateNote(transaction._id, newNote);
+                                setEditingNoteId(null);
+                            }}
+                            placeholder="Enter new note"
+                        />
+                    ) : (
+                        <span
+                            onClick={() => {
+                                setEditingNoteId(transaction._id);
+                                setNewNote(transaction.notes);
+                            }}
+                            style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                        >
+                            {transaction.notes}
+                        </span>
+                    )}
+                </span>
                 <span className="member">{transaction.member}</span>
+                <button
+                    onClick={() => deleteTransaction(transaction._id)}
+                >
+                    Delete
+                </button>
             </div>
         ));
     };
@@ -176,31 +261,12 @@ export function Transactions() {
                 </button>
             </div>
             <div className="filters">
-                <select
+                <input
+                    type="text"
                     value={filterCategory}
                     onChange={(e) => setFilterCategory(e.target.value)}
-                >
-                    <option value="">All Categories</option>
-                    <option>Piano Lessons</option>
-                    <option>Stipend</option>
-                    <option>Reimbursement</option>
-                    <option>Tithing</option>
-                    <option>Car Repair</option>
-                    <option>School</option>
-                    <option>Groceries</option>
-                    <option>Junk food</option>
-                    <option>Gifts</option>
-                    <option>Gas</option>
-                    <option>Wholesome Recreational Activities</option>
-                    <option>Home</option>
-                    <option>Clothes</option>
-                    <option>Facebook Marketplace</option>
-                    <option>Gun Stuff</option>
-                    <option>Rent</option>
-                    <option>Utilities</option>
-                    <option>Savings</option>
-                    <option>Travel</option>
-                </select>
+                    placeholder="Filter by category"
+                />
 
                 <input
                     type="date"
